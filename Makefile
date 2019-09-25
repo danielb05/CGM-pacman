@@ -1,4 +1,4 @@
-chess: chess.c
-	gcc chess.c -o chess -lglut -lGLU -lGL -lm 
+chess: chess.cpp
+	g++ pacman.cpp -o pacman -lglut -lGLU -lGL -lm 
 clean:
-	rm chess
+	rm pacman
