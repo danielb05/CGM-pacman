@@ -1,14 +1,25 @@
+/*		 26/09/2019
+	Universitat de Lleida
+Computer Graphics and Multimedia
+
+Task 1 - Pacman Map Generation
+
+Students:
+Daniel Vieira Cordeiro
+Rafael Câmara Pereira
+*/
+
 #include <iostream>
 #include <string>
 #include <cmath>
 #include <sstream> 
 #include <cstdlib>
 #include <ctime>
-
 #include <GL/glut.h>
 
 using namespace std;
 
+// Define constants for poligon size and map constraints
 #define BLOCKHEIGHT 20
 #define BLOCKWIDTH 20
 #define MAXROWS 50
@@ -16,10 +27,10 @@ using namespace std;
 #define MINROWS 10
 #define MINCOLUMNS 10
 
-
 void display();
-void display2();
 
+int WIDTH;
+int HEIGHT;
 int randomDirection(int lastDirection);
 int lastDirection = 5;
 
@@ -46,94 +57,84 @@ class Map {
 		int randomDirection(int lastDirection);
 };
 
+// Gets the values for number of lines and columns
 void Map::set_values() {
 
 	bool invalid = true;
 
-	cout << "Please enter the number of rows (min " << MINROWS << ", max " << MAXROWS << "): ";
-	cin >> ROWS;
-
-	while (invalid)
-	{
-		if (ROWS < MINROWS || ROWS > MAXROWS) {
-			cout << "Please enter a valid number of rows (min " << MINROWS <<", max " << MAXROWS << "): ";
-			cin >> ROWS;
-		}
-		else
-		{
+	do {
+		
+		cout << "Please enter a valid number of rows (min " << MINROWS <<", max " << MAXROWS << "): ";
+		cin >> ROWS;
+			
+		if (ROWS >= MINROWS && ROWS <= MAXROWS)
 			invalid = false;
-		}
-	}
+	}while (invalid);
 
 	invalid = true;
 	
-	cout << "\nPlease enter the number of columns (min " << MINCOLUMNS << ", max " << MAXCOLUMNS << "): ";
-	cin >> COLUMNS2;
-
-	while (invalid)
-	{
-		if (COLUMNS2 < MINCOLUMNS || COLUMNS2 > MAXCOLUMNS) {
-			cout << "Please enter a valid number of columns (min " << MINCOLUMNS << ", max " << MAXCOLUMNS << "): ";
-			cin >> COLUMNS2;
-		}
-		else
-		{
+	do{
+		
+		cout << "Please enter a valid number of columns (min " << MINCOLUMNS << ", max " << MAXCOLUMNS << "): ";
+		cin >> COLUMNS2;
+		
+		if (COLUMNS2 >= MINCOLUMNS && COLUMNS2 <= MAXCOLUMNS)
 			invalid = false;
-		}
-	}
+	}while (invalid);
 	
+	// Sets the variables to draw half map, since the map is mirrored
 	rowHalf = (int)floor(ROWS / 2) - 1;
-
 	COLUMNS = ceil(COLUMNS2 / 2);
-
 	columnHalf = (int)COLUMNS - 1;
+	
+	// Creates a matrix corresponding to half map 
+	mapSurface = new char *[(int)ROWS]; //Matrix is now a pointer to an array of 'rows' point
 
-	mapSurface = new char *[(int)ROWS];//Matrix is now a pointer to an array of 'rows' point
-
-	for (int i = 0; i < ROWS; i++) {
-
-		mapSurface[i] = new char[(int)COLUMNS];		//the ith array is initialized
-	}
+	for (int i = 0; i < ROWS; i++)
+		mapSurface[i] = new char[(int)COLUMNS];	//the ith array is initialized
 
 	initiateMap();
 }
 
+// Sets the map to walls
 void Map::initiateMap() {
-	int i, j;
-	i = 0;
+	
+	int j;
 
-	while (i < ROWS) {
+	for(int i = 0; i < ROWS; i++){
 
 		j = 0;
 
-		while (j < COLUMNS) {
+		while (j < COLUMNS){
+			
 			mapSurface[i][j] = '1';
 			j++;
 		}
-
-		i++;
-	};
+	}
 }
 
+// Draws the border as FIXED walls
 void Map::drawBorders() {
-	int i, j;
-	i = 0;
-
-	while (i < ROWS) {
+	
+	int j;
+	
+	for(int i = 0; i < ROWS; i++){
 
 		j = 0;
 
 		while (j < COLUMNS) {
-			if (i == 0 || j == 0 || i == ROWS - 1) {
+			
+			if (i == 0 || j == 0 || i == ROWS - 1)
 				mapSurface[i][j] = 'X';
-			}
+			else
+				j = COLUMNS;
+			
 			j++;
 		}
-
-		i++;
-	};
+	}
 }
 
+// Draws the center as FIXED walls/corridors
 void Map::drawCenter() {
 
 	// To draw the center, draw the following:
@@ -154,115 +155,114 @@ void Map::drawCenter() {
 	}
 }
 
+// Reflects the left size on the right
 void Map::mirror() {
 
-	mapSurface2 = new char *[(int)ROWS];	//Matrix is now a pointer to an array of 'rows' point
+	mapSurface2 = new char *[(int)ROWS]; //Matrix is now a pointer to an array of 'rows' point
 
-	for (int i = 0; i < ROWS; i++) {
-
+	for (int i = 0; i < ROWS; i++)
 		mapSurface2[i] = new char[(int)COLUMNS2];	//the ith array is initialized
-	}
 
 	for (int i = 0; i < ROWS; i++) {
 		for (int j = 0; j < COLUMNS; j++) {
+			
 			mapSurface2[i][j] = mapSurface[i][j];
 			mapSurface2[i][(int)COLUMNS2 - j - 1] = mapSurface[i][j];
 		}
 	}
 }
 
-void Map::showTextMap() {
-
-	cout << "\n";
-
-	for (int i = 0; i < ROWS; i++) {
-		for (int j = 0; j < COLUMNS; j++) {
-			cout << mapSurface[i][j];
-		}
-
-		cout << "\n";
-	}
-}
-
+// Shows te map on terminal output
 void Map::showTextMap2() {
 
 	cout << "\n";
 
 	for (int i = 0; i < ROWS; i++) {
-		for (int j = 0; j < COLUMNS2; j++) {
+		for (int j = 0; j < COLUMNS2; j++)
 			cout << mapSurface2[i][j];
-		}
 
 		cout << "\n";
 	}
 }
 
+// Dig the valid way
 void Map::findPaths(int x, int y) {
 
+	// Sets the actual position to a corridor cell
 	mapSurface[x][y] = ' ';
-	//showTextMap();
+	
+	// Randomically selects one way to continue
 	int d = randomDirection(lastDirection);
 	
-	//North
-	if (d == 0) {
-		if (x - 1 >= 0) {
-			if (mapSurface[x - 1][y] == '1') {
-				if(y - 1 >= 0 && mapSurface[x][y-1] == '1')
-					mapSurface[x][y - 1] = 'Y';
-				if (y + 1 < COLUMNS && mapSurface[x][y + 1] == '1')
-					mapSurface[x][y + 1] = 'Y';
-				
-				lastDirection = 5;
-				findPaths(x - 1, y);
+	switch (d){
+		//North
+		case 0:
+			// If the north is selected, sets the sided cells as FIXED walls and generates the north corridor
+			if (x - 1 > 0) {
+				if (mapSurface[x - 1][y] == '1') {
+					if(y - 1 > 0 && mapSurface[x][y-1] == '1')
+						mapSurface[x][y - 1] = 'Y';
+					if (y + 1 < COLUMNS && mapSurface[x][y + 1] == '1')
+						mapSurface[x][y + 1] = 'Y';
+					
+					lastDirection = 5;
+					findPaths(x - 1, y);
+				}
+			}		
+			break;
+		//South
+		case 1:
+			// If the south is selected, sets the sided cells as FIXED walls and generates the south corridor
+			if (x + 1 < ROWS - 1) {
+				if (mapSurface[x + 1][y] == '1') {
+					if (y - 1 > 0 && mapSurface[x][y - 1] == '1')
+						mapSurface[x][y - 1] = 'Y';
+					if (y + 1 < COLUMNS && mapSurface[x][y + 1] == '1')
+						mapSurface[x][y + 1] = 'Y';
+					
+					lastDirection = 5;
+					findPaths(x + 1, y);
+				}
 			}
-		}		
-	}
-	//South
-	else if (d == 1) {
-		if (x + 1 < ROWS) {
-			if (mapSurface[x + 1][y] == '1') {
-				if (y - 1 >= 0 && mapSurface[x][y - 1] == '1')
-					mapSurface[x][y - 1] = 'Y';
-				if (y + 1 < COLUMNS && mapSurface[x][y + 1] == '1')
-					mapSurface[x][y + 1] = 'Y';
-				
-				lastDirection = 5;
-				findPaths(x + 1, y);
+			break;
+		//West
+		case 2:
+			// If the west is selected, sets the upper/lower cells as FIXED walls and generates the west corridor
+			if (y - 1 > 0) {
+				if (mapSurface[x][y - 1] == '1') {
+					if (x - 1 > 0 && mapSurface[x - 1][y] == '1')
+						mapSurface[x - 1][y] = 'Y';
+					if (x + 1 < ROWS - 1 && mapSurface[x + 1][y] == '1')
+						mapSurface[x + 1][y] = 'Y';
+					
+					lastDirection = 5;
+					findPaths(x, y - 1);
+				}
 			}
-		}
-	}
-	//West
-	else if (d == 2) {
-		if (y - 1 >= 0) {
-			if (mapSurface[x][y - 1] == '1') {
-				if (x - 1 >= 0 && mapSurface[x - 1][y] == '1')
-					mapSurface[x - 1][y] = 'Y';
-				if (x + 1 < ROWS && mapSurface[x + 1][y] == '1')
-					mapSurface[x + 1][y] = 'Y';
-				
-				lastDirection = 5;
-				findPaths(x, y - 1);
+			break;
+		//East
+		case 3:
+			// If the east is selected, sets the upper/lower cells as FIXED walls and generates the east corridor
+			if (y + 1 < COLUMNS) {
+				if (mapSurface[x][y + 1] == '1') {
+					if (x - 1 > 0 && mapSurface[x - 1][y] == '1')
+						mapSurface[x - 1][y] = 'Y';
+					if (x + 1 < ROWS - 1 && mapSurface[x + 1][y] == '1')
+						mapSurface[x + 1][y] = 'Y';
+					
+					lastDirection = 5;
+					findPaths(x, y + 1);
+				}
 			}
-		}
+			break;
 	}
-	//East
-	else if (d == 3) {
-		if (y + 1 < COLUMNS) {
-			if (mapSurface[x][y + 1] == '1') {
-				if (x - 1 >= 0 && mapSurface[x - 1][y] == '1')
-					mapSurface[x - 1][y] = 'Y';
-				if (x + 1 < ROWS && mapSurface[x + 1][y] == '1')
-					mapSurface[x + 1][y] = 'Y';
-				
-				lastDirection = 5;
-				findPaths(x, y + 1);
-			}
-		}
-	}
-	if ((x + 1 < ROWS && mapSurface[x + 1][y] == '1')
-		|| (x - 1 >= 0 && mapSurface[x - 1][y] == '1')
-		|| (y + 1 < COLUMNS && mapSurface[x][y + 1] == '1')
-		|| (y - 1 >= 0 && mapSurface[x][y - 1] == '1')) {
+	
+	// Verify if there's yet a neghbor with a non-fixed wall
+	if ((x + 1 < ROWS - 1 && mapSurface[x + 1][y] == '1')
+		|| (x - 1 > 0 && mapSurface[x - 1][y] == '1')
+		|| (y + 1 < COLUMNS - 1 && mapSurface[x][y + 1] == '1')
+		|| (y - 1 > 0 && mapSurface[x][y - 1] == '1')) {
+		
 		lastDirection = d;
 		findPaths(x, y);
 	}
@@ -270,54 +270,52 @@ void Map::findPaths(int x, int y) {
 
 void Map::breakWalls() {
 
-	for (int i = 0; i < ROWS; i++) {
-		for (int j = 0; j < COLUMNS; j++) {
-			if (mapSurface[i][j] == '1') {
+	// Looks for non-fixed walls to convert
+	for (int i = 1; i < ROWS - 1; i++) {
+		for (int j = 1; j < COLUMNS; j++) {
+			if (mapSurface[i][j] == '1')
 				findPaths(i, j);
-			}
 		}
 	}
 
-	for (int i = 0; i < ROWS; i++) {
-		for (int j = 0; j < COLUMNS; j++) {
+	for (int i = 1; i < ROWS - 1; i++) {
+		for (int j = 1; j < COLUMNS; j++) {
+			
 			int count = 0;
+			
+			// Verify if the cell is isolated, if so, remove 1 or 2 walls from the neighbours
 			if (mapSurface[i][j] == ' ') {
-				if (mapSurface[i + 1][j] != ' ') {
+				if (mapSurface[i + 1][j] != ' ')
 					count++;
-				}
-				if (mapSurface[i - 1][j] != ' ') {
+				
+				if (mapSurface[i - 1][j] != ' ')
 					count++;
-				}
-				if (mapSurface[i][j + 1] != ' ') {
+				
+				if (mapSurface[i][j + 1] != ' ')
 					count++;
-				}
-				if (mapSurface[i][j - 1] != ' ') {
+				
+				if (mapSurface[i][j - 1] != ' ')
 					count++;
-				}
+				
 				if (count == 4) {
-					if (mapSurface[i + 1][j] == 'Y') {
+					if (mapSurface[i + 1][j] == 'Y')
 						mapSurface[i + 1][j] = ' ';
-					}
-					else if (mapSurface[i - 1][j] == 'Y') {
+					else if (mapSurface[i - 1][j] == 'Y')
 						mapSurface[i - 1][j] = ' ';
-					}
-					if (mapSurface[i][j + 1] == 'Y') {
+					
+					if (mapSurface[i][j + 1] == 'Y')
 						mapSurface[i][j + 1] = ' ';
-					}
-					else if (mapSurface[i][j - 1] == 'Y') {
+					else if (mapSurface[i][j - 1] == 'Y')
 						mapSurface[i][j - 1] = ' ';
-					}
 				}
+				
 				if (count == 3) {
-					if (mapSurface[i + 1][j] == 'Y') {
+					if (mapSurface[i + 1][j] == 'Y')
 						mapSurface[i + 1][j] = ' ';
-					}
-					else if (mapSurface[i][j + 1] == 'Y') {
+					else if (mapSurface[i][j + 1] == 'Y')
 						mapSurface[i][j + 1] = ' ';
-					}
-					else if (mapSurface[i - 1][j] == 'Y') {
+					else if (mapSurface[i - 1][j] == 'Y')
 						mapSurface[i - 1][j] = ' ';
-					}
 				}
 			}
 		}
@@ -334,19 +332,21 @@ void Map::draw() {
 	showTextMap2();
 }
 
+// Sorts the next direction of the corridor
 int Map::randomDirection(int lastDirection) {
 
-	int range = 3 - 0 + 1;
-	int num = 0;
+	int range = 4;
+	int num;
+	
 	do {
+	
 		num = rand() % range;
 	} while (num == lastDirection);
+	
 	return num;
 }
 
 Map map;
-int WIDTH;
-int HEIGHT;
 
 int main(int argc, char *argv[]) {
 
@@ -363,10 +363,7 @@ int main(int argc, char *argv[]) {
 	glutInitWindowPosition(50, 50);
 	glutInitWindowSize(WIDTH, HEIGHT);
 	glutCreateWindow("Pacman maze");
-
-	//glutDisplayFunc(display);
-	glutDisplayFunc(display2);
-
+	glutDisplayFunc(display);
 	glMatrixMode(GL_PROJECTION);
 	gluOrtho2D(0, WIDTH - 1, 0, HEIGHT - 1);
 
@@ -375,10 +372,12 @@ int main(int argc, char *argv[]) {
 	return 0;
 }
 
-void display2()
-{
+// Draws the map for OpenGL exhibition
+void display(){
+	
 	int i, j;
 
+	// Path color
 	glClearColor(0.0, 0.0, 0.0, 0.0);
 	glClear(GL_COLOR_BUFFER_BIT);
 	glColor3f(0.25, 0.25, 1.66);
@@ -403,24 +402,11 @@ void display2()
 
 				glBegin(GL_QUADS);
 
-				//a d
-				//b c
-
-				glVertex2i(j*HEIGHT / map.ROWS, i*WIDTH / map.COLUMNS2);
-				int ax = j * HEIGHT / map.ROWS;
-				int ay = i * WIDTH / map.COLUMNS2;
-
-				glVertex2i(j*HEIGHT / map.ROWS, (i + 1)*WIDTH / map.COLUMNS2);
-				int bx = j * HEIGHT / map.ROWS;
-				int by = (i + 1)*WIDTH / map.COLUMNS2;
-
-				glVertex2i((j + 1)*HEIGHT / map.ROWS, (i + 1)*WIDTH / map.COLUMNS2);
-				int cx = (j + 1)*HEIGHT / map.ROWS;
-				int cy = (i + 1)*WIDTH / map.COLUMNS2;
-
-				glVertex2i((j + 1)*HEIGHT / map.ROWS, i*WIDTH / map.COLUMNS2);
-				int dx = (j + 1)*HEIGHT / map.ROWS;
-				int dy = i * WIDTH / map.COLUMNS2;
+				// Sets the poligon vertices
+				glVertex2i(j * HEIGHT / map.ROWS, i * WIDTH / map.COLUMNS2);
+				glVertex2i(j * HEIGHT / map.ROWS, (i + 1) * WIDTH / map.COLUMNS2);
+				glVertex2i((j + 1) * HEIGHT / map.ROWS, (i + 1) * WIDTH / map.COLUMNS2);
+				glVertex2i((j + 1) * HEIGHT / map.ROWS, i * WIDTH / map.COLUMNS2);
 
 				glEnd();
 			}
@@ -428,59 +414,4 @@ void display2()
 	}
 
 	glutSwapBuffers();
-
-}
-
-void display()
-{
-	int i, j;
-
-	glClearColor(0.0, 0.0, 0.0, 0.0);
-	glClear(GL_COLOR_BUFFER_BIT);
-	glColor3f(0.25, 0.25, 1.66);
-
-	int x = map.COLUMNS - 1;
-	int y = map.ROWS - 1;
-
-	for (int i = 0; i < map.ROWS; i++) {
-		for (int j = 0; j < map.COLUMNS; j++) {
-			if (map.mapSurface[y - i][x - j] != ' ') {
-
-				if (map.mapSurface[y - i][x - j] == 'X')
-					glColor3f(0.8, 0.8, 0.8);
-				else if (map.mapSurface[y - i][x - j] == 'Y')
-					glColor3f(0.25, 0.25, 1.66);
-				else if (map.mapSurface[y - i][x - j] == '1')
-					glColor3f(0.8, 1.8, 0.8);
-				else
-					glColor3f(0.25, 0.25, 1.66);
-
-				glBegin(GL_QUADS);
-
-				//a d
-				//b c
-
-				glVertex2i(j*HEIGHT / map.ROWS, i*WIDTH / map.COLUMNS);
-				int ax = j * HEIGHT / map.ROWS;
-				int ay = i * WIDTH / map.COLUMNS;
-
-				glVertex2i(j*HEIGHT / map.ROWS, (i + 1)*WIDTH / map.COLUMNS);
-				int bx = j * HEIGHT / map.ROWS;
-				int by = (i + 1)*WIDTH / map.COLUMNS;
-
-				glVertex2i((j + 1)*HEIGHT / map.ROWS, (i + 1)*WIDTH / map.COLUMNS);
-				int cx = (j + 1)*HEIGHT / map.ROWS;
-				int cy = (i + 1)*WIDTH / map.COLUMNS;
-
-				glVertex2i((j + 1)*HEIGHT / map.ROWS, i*WIDTH / map.COLUMNS);
-				int dx = (j + 1)*HEIGHT / map.ROWS;
-				int dy = i * WIDTH / map.COLUMNS;
-
-				glEnd();
-			}
-		}
-	}
-
-	glutSwapBuffers();
-
 }
