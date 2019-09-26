@@ -1,5 +1,7 @@
-/*		 26/09/2019
-	Universitat de Lleida
+/*
+26/09/2019
+
+Universitat de Lleida
 Computer Graphics and Multimedia
 
 Task 1 - Pacman Map Generation
@@ -7,6 +9,7 @@ Task 1 - Pacman Map Generation
 Students:
 Daniel Vieira Cordeiro
 Rafael Câmara Pereira
+
 */
 
 #include <iostream>
@@ -15,6 +18,7 @@ Rafael Câmara Pereira
 #include <sstream> 
 #include <cstdlib>
 #include <ctime>
+
 #include <GL/glut.h>
 
 using namespace std;
@@ -29,10 +33,9 @@ using namespace std;
 
 void display();
 
+int lastDirection = 5;
 int WIDTH;
 int HEIGHT;
-int randomDirection(int lastDirection);
-int lastDirection = 5;
 
 class Map {
 
@@ -50,7 +53,6 @@ class Map {
 		void drawCenter();
 		void mirror();
 		void showTextMap();
-		void showTextMap2();
 		void draw();
 		void findPaths(int x, int y);
 		void breakWalls();
@@ -63,21 +65,21 @@ void Map::set_values() {
 	bool invalid = true;
 
 	do {
-		
-		cout << "Please enter a valid number of rows (min " << MINROWS <<", max " << MAXROWS << "): ";
+
+		cout << "Please enter a valid number of rows (min " << MINROWS << ", max " << MAXROWS << "): ";
 		cin >> ROWS;
-			
+
 		if (ROWS >= MINROWS && ROWS <= MAXROWS)
 			invalid = false;
 	}while (invalid);
 
 	invalid = true;
-	
-	do{
-		
+
+	do {
+
 		cout << "Please enter a valid number of columns (min " << MINCOLUMNS << ", max " << MAXCOLUMNS << "): ";
 		cin >> COLUMNS2;
-		
+
 		if (COLUMNS2 >= MINCOLUMNS && COLUMNS2 <= MAXCOLUMNS)
 			invalid = false;
 	}while (invalid);
@@ -86,27 +88,29 @@ void Map::set_values() {
 	rowHalf = (int)floor(ROWS / 2) - 1;
 	COLUMNS = ceil(COLUMNS2 / 2);
 	columnHalf = (int)COLUMNS - 1;
-	
+
 	// Creates a matrix corresponding to half map 
 	mapSurface = new char *[(int)ROWS]; //Matrix is now a pointer to an array of 'rows' point
 
-	for (int i = 0; i < ROWS; i++)
-		mapSurface[i] = new char[(int)COLUMNS];	//the ith array is initialized
+	for (int i = 0; i < ROWS; i++) {
+
+		mapSurface[i] = new char[(int)COLUMNS];		//the ith array is initialized
+	}
 
 	initiateMap();
 }
 
 // Sets the map to walls
 void Map::initiateMap() {
-	
+
 	int j;
 
-	for(int i = 0; i < ROWS; i++){
+	for (int i = 0; i < ROWS; i++) {
 
 		j = 0;
 
-		while (j < COLUMNS){
-			
+		while (j < COLUMNS) {
+
 			mapSurface[i][j] = '1';
 			j++;
 		}
@@ -115,20 +119,20 @@ void Map::initiateMap() {
 
 // Draws the border as FIXED walls
 void Map::drawBorders() {
-	
+
 	int j;
-	
-	for(int i = 0; i < ROWS; i++){
+
+	for (int i = 0; i < ROWS; i++) {
 
 		j = 0;
 
 		while (j < COLUMNS) {
-			
+
 			if (i == 0 || j == 0 || i == ROWS - 1)
 				mapSurface[i][j] = 'X';
 			else
 				j = COLUMNS;
-			
+
 			j++;
 		}
 	}
@@ -160,12 +164,14 @@ void Map::mirror() {
 
 	mapSurface2 = new char *[(int)ROWS]; //Matrix is now a pointer to an array of 'rows' point
 
-	for (int i = 0; i < ROWS; i++)
-		mapSurface2[i] = new char[(int)COLUMNS2];	//the ith array is initialized
+	for (int i = 0; i < ROWS; i++) {
+
+		mapSurface2[i] = new char[(int)COLUMNS2]; //the ith array is initialized
+	}
 
 	for (int i = 0; i < ROWS; i++) {
 		for (int j = 0; j < COLUMNS; j++) {
-			
+
 			mapSurface2[i][j] = mapSurface[i][j];
 			mapSurface2[i][(int)COLUMNS2 - j - 1] = mapSurface[i][j];
 		}
@@ -173,13 +179,14 @@ void Map::mirror() {
 }
 
 // Shows te map on terminal output
-void Map::showTextMap2() {
+void Map::showTextMap() {
 
 	cout << "\n";
 
 	for (int i = 0; i < ROWS; i++) {
-		for (int j = 0; j < COLUMNS2; j++)
+		for (int j = 0; j < COLUMNS2; j++) {
 			cout << mapSurface2[i][j];
+		}
 
 		cout << "\n";
 	}
@@ -188,86 +195,92 @@ void Map::showTextMap2() {
 // Dig the valid way
 void Map::findPaths(int x, int y) {
 
-	// Sets the actual position to a corridor cell
+	// Sets the current position to a corridor cell
 	mapSurface[x][y] = ' ';
-	
+
 	// Randomically selects one way to continue
-	int d = randomDirection(lastDirection);
+	int direction = randomDirection(lastDirection);
 	
-	switch (d){
-		//North
-		case 0:
-			// If the north is selected, sets the sided cells as FIXED walls and generates the north corridor
-			if (x - 1 > 0) {
-				if (mapSurface[x - 1][y] == '1') {
-					if(y - 1 > 0 && mapSurface[x][y-1] == '1')
-						mapSurface[x][y - 1] = 'Y';
-					if (y + 1 < COLUMNS && mapSurface[x][y + 1] == '1')
-						mapSurface[x][y + 1] = 'Y';
-					
-					lastDirection = 5;
-					findPaths(x - 1, y);
-				}
-			}		
-			break;
-		//South
-		case 1:
-			// If the south is selected, sets the sided cells as FIXED walls and generates the south corridor
-			if (x + 1 < ROWS - 1) {
-				if (mapSurface[x + 1][y] == '1') {
-					if (y - 1 > 0 && mapSurface[x][y - 1] == '1')
-						mapSurface[x][y - 1] = 'Y';
-					if (y + 1 < COLUMNS && mapSurface[x][y + 1] == '1')
-						mapSurface[x][y + 1] = 'Y';
-					
-					lastDirection = 5;
-					findPaths(x + 1, y);
-				}
-			}
-			break;
-		//West
-		case 2:
-			// If the west is selected, sets the upper/lower cells as FIXED walls and generates the west corridor
-			if (y - 1 > 0) {
-				if (mapSurface[x][y - 1] == '1') {
-					if (x - 1 > 0 && mapSurface[x - 1][y] == '1')
-						mapSurface[x - 1][y] = 'Y';
-					if (x + 1 < ROWS - 1 && mapSurface[x + 1][y] == '1')
-						mapSurface[x + 1][y] = 'Y';
-					
-					lastDirection = 5;
-					findPaths(x, y - 1);
-				}
-			}
-			break;
-		//East
-		case 3:
-			// If the east is selected, sets the upper/lower cells as FIXED walls and generates the east corridor
-			if (y + 1 < COLUMNS) {
-				if (mapSurface[x][y + 1] == '1') {
-					if (x - 1 > 0 && mapSurface[x - 1][y] == '1')
-						mapSurface[x - 1][y] = 'Y';
-					if (x + 1 < ROWS - 1 && mapSurface[x + 1][y] == '1')
-						mapSurface[x + 1][y] = 'Y';
-					
-					lastDirection = 5;
-					findPaths(x, y + 1);
-				}
-			}
-			break;
-	}
+	// Choose the next block to be digged according to the random direction in 'direction'
+	switch (direction) {
 	
-	// Verify if there's yet a neghbor with a non-fixed wall
-	if ((x + 1 < ROWS - 1 && mapSurface[x + 1][y] == '1')
-		|| (x - 1 > 0 && mapSurface[x - 1][y] == '1')
-		|| (y + 1 < COLUMNS - 1 && mapSurface[x][y + 1] == '1')
-		|| (y - 1 > 0 && mapSurface[x][y - 1] == '1')) {
+	//North
+	case 0:
+		// If the north is selected, sets the sided cells as FIXED walls and generates the north corridor
+		if (x - 1 > 0) {
+			if (mapSurface[x - 1][y] == '1') {
+				if (y - 1 > 0 && mapSurface[x][y - 1] == '1')
+					mapSurface[x][y - 1] = 'Y';
+				if (y + 1 < COLUMNS && mapSurface[x][y + 1] == '1')
+					mapSurface[x][y + 1] = 'Y';
+
+				lastDirection = 5;
+				findPaths(x - 1, y);
+			}
+		}
+		break;
+	
+	//South
+	case 1:
+		// If the south is selected, sets the sided cells as FIXED walls and generates the south corridor
+		if (x + 1 < ROWS - 1) {
+			if (mapSurface[x + 1][y] == '1') {
+				if (y - 1 > 0 && mapSurface[x][y - 1] == '1')
+					mapSurface[x][y - 1] = 'Y';
+				if (y + 1 < COLUMNS && mapSurface[x][y + 1] == '1')
+					mapSurface[x][y + 1] = 'Y';
+
+				lastDirection = 5;
+				findPaths(x + 1, y);
+			}
+		}
+		break;
 		
-		lastDirection = d;
+	//West
+	case 2:
+		// If the west is selected, sets the upper/lower cells as FIXED walls and generates the west corridor
+		if (y - 1 > 0) {
+			if (mapSurface[x][y - 1] == '1') {
+				if (x - 1 > 0 && mapSurface[x - 1][y] == '1')
+					mapSurface[x - 1][y] = 'Y';
+				if (x + 1 < ROWS - 1 && mapSurface[x + 1][y] == '1')
+					mapSurface[x + 1][y] = 'Y';
+
+				lastDirection = 5;
+				findPaths(x, y - 1);
+			}
+		}
+		break;
+		
+	//East
+	case 3:
+		// If the east is selected, sets the upper/lower cells as FIXED walls and generates the east corridor
+		if (y + 1 < COLUMNS) {
+			if (mapSurface[x][y + 1] == '1') {
+				if (x - 1 > 0 && mapSurface[x - 1][y] == '1')
+					mapSurface[x - 1][y] = 'Y';
+				if (x + 1 < ROWS - 1 && mapSurface[x + 1][y] == '1')
+					mapSurface[x + 1][y] = 'Y';
+
+				lastDirection = 5;
+				findPaths(x, y + 1);
+			}
+		}
+		break;
+	}
+
+	// Verify if there's yet a neghbor with a non-fixed wall
+	if ((x + 1 < ROWS && mapSurface[x + 1][y] == '1')
+		|| (x - 1 >= 0 && mapSurface[x - 1][y] == '1')
+		|| (y + 1 < COLUMNS && mapSurface[x][y + 1] == '1')
+		|| (y - 1 >= 0 && mapSurface[x][y - 1] == '1')) {
+
+		lastDirection = direction;
 		findPaths(x, y);
 	}
 }
 
+// Used to find and eliminate unreachable areas on the map
 void Map::breakWalls() {
 
 	// Looks for non-fixed walls to convert
@@ -278,50 +291,57 @@ void Map::breakWalls() {
 		}
 	}
 
-	for (int i = 1; i < ROWS - 1; i++) {
-		for (int j = 1; j < COLUMNS; j++) {
-			
+	for (int i = 0; i < ROWS; i++) {
+		for (int j = 0; j < COLUMNS; j++) {
 			int count = 0;
-			
+
 			// Verify if the cell is isolated, if so, remove 1 or 2 walls from the neighbours
 			if (mapSurface[i][j] == ' ') {
-				if (mapSurface[i + 1][j] != ' ')
+				if (mapSurface[i + 1][j] != ' ') {
 					count++;
-				
-				if (mapSurface[i - 1][j] != ' ')
+				}
+				if (mapSurface[i - 1][j] != ' ') {
 					count++;
-				
-				if (mapSurface[i][j + 1] != ' ')
+				}
+				if (mapSurface[i][j + 1] != ' ') {
 					count++;
-				
-				if (mapSurface[i][j - 1] != ' ')
+				}
+				if (mapSurface[i][j - 1] != ' ') {
 					count++;
-				
+				}
+
 				if (count == 4) {
-					if (mapSurface[i + 1][j] == 'Y')
+					if (mapSurface[i + 1][j] == 'Y') {
 						mapSurface[i + 1][j] = ' ';
-					else if (mapSurface[i - 1][j] == 'Y')
+					}
+					else if (mapSurface[i - 1][j] == 'Y') {
 						mapSurface[i - 1][j] = ' ';
-					
-					if (mapSurface[i][j + 1] == 'Y')
+					}
+					if (mapSurface[i][j + 1] == 'Y') {
 						mapSurface[i][j + 1] = ' ';
-					else if (mapSurface[i][j - 1] == 'Y')
+					}
+					else if (mapSurface[i][j - 1] == 'Y') {
 						mapSurface[i][j - 1] = ' ';
+					}
 				}
 				
 				if (count == 3) {
-					if (mapSurface[i + 1][j] == 'Y')
+					if (mapSurface[i + 1][j] == 'Y') {
 						mapSurface[i + 1][j] = ' ';
-					else if (mapSurface[i][j + 1] == 'Y')
+					}
+					else if (mapSurface[i][j + 1] == 'Y') {
 						mapSurface[i][j + 1] = ' ';
-					else if (mapSurface[i - 1][j] == 'Y')
+					}
+					else if (mapSurface[i - 1][j] == 'Y') {
 						mapSurface[i - 1][j] = ' ';
+					}
 				}
 			}
 		}
 	}
 }
 
+// Calls the necessary functions (in the correct order) in order to ramdomly generate a map 
 void Map::draw() {
 
 	drawBorders();
@@ -329,7 +349,7 @@ void Map::draw() {
 	findPaths(rowHalf-1, columnHalf);
 	breakWalls();
 	mirror();
-	showTextMap2();
+	showTextMap();
 }
 
 // Sorts the next direction of the corridor
@@ -337,17 +357,19 @@ int Map::randomDirection(int lastDirection) {
 
 	int range = 4;
 	int num;
-	
+
 	do {
-	
+
 		num = rand() % range;
+
 	} while (num == lastDirection);
-	
+
 	return num;
 }
 
 Map map;
 
+// Main function
 int main(int argc, char *argv[]) {
 
 	srand(time(0));
@@ -363,7 +385,9 @@ int main(int argc, char *argv[]) {
 	glutInitWindowPosition(50, 50);
 	glutInitWindowSize(WIDTH, HEIGHT);
 	glutCreateWindow("Pacman maze");
+
 	glutDisplayFunc(display);
+
 	glMatrixMode(GL_PROJECTION);
 	gluOrtho2D(0, WIDTH - 1, 0, HEIGHT - 1);
 
@@ -373,13 +397,15 @@ int main(int argc, char *argv[]) {
 }
 
 // Draws the map for OpenGL exhibition
-void display(){
-	
+void display()
+{
 	int i, j;
 
 	// Path color
 	glClearColor(0.0, 0.0, 0.0, 0.0);
 	glClear(GL_COLOR_BUFFER_BIT);
+
+	// Walls color
 	glColor3f(0.25, 0.25, 1.66);
 
 	int x = map.ROWS - 1;
@@ -390,15 +416,6 @@ void display(){
 			if (map.mapSurface2[x - i][y - j] != ' ') {
 
 				char c = map.mapSurface2[x - i][y - j];
-
-				if (map.mapSurface2[x - i][y - j] == 'X')
-					glColor3f(0.8, 0.8, 0.8);
-				//else if(map.mapSurface2[x - i][y - j] == 'Y') 
-				//	glColor3f(1.8, 1.8, 0.8);
-				else if (map.mapSurface2[x - i][y - j] == '1')
-					glColor3f(0.8, 1.8, 0.8);
-				else
-					glColor3f(0.25, 0.25, 1.66);
 
 				glBegin(GL_QUADS);
 
@@ -414,4 +431,5 @@ void display(){
 	}
 
 	glutSwapBuffers();
+
 }
