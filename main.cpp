@@ -13,10 +13,10 @@ Rafael Câmara Pereira
 */
 
 #include <iostream>
-//#include <GL/freeglut.h>
-#include <GL/glut.h>
+#include <GL/freeglut.h>
+//#include <GL/glut.h>
 #include <ctime>
-#include"map.h"
+#include"pacman.h"
 
 using namespace std;
 
@@ -30,13 +30,16 @@ int WIDTH;
 int HEIGHT;
 
 Map map;
+Pacman pacman;
 
 // Main function
 int main(int argc, char *argv[]) {
 
-srand(time(0));
+	srand(time(0));
+	
 	map.set_values();
 	map.draw();
+	pacman.born(map);
 
 	WIDTH = map.COLUMNS2 * BLOCKWIDTH;
 	HEIGHT = map.ROWS * BLOCKHEIGHT;
@@ -71,7 +74,7 @@ void display(){
 
 	for (int i = 0; i < map.ROWS; i++) {
 		for (int j = 0; j < map.COLUMNS2; j++) {
-			if (map.mapSurface2[x - i][y - j] == 'X' || map.mapSurface2[x - i][y - j] == 'Y') {
+			if (map.mapSurface2[x - i][y - j] == FIXEDWALL || map.mapSurface2[x - i][y - j] == INNERWALL) {
 				// Walls color
 				glColor3f(0.25, 0.25, 1.0);
 				char c = map.mapSurface2[x - i][y - j];
@@ -87,10 +90,25 @@ void display(){
 				glEnd();
 			}
 
-			if (map.mapSurface2[x - i][y - j] == ' ') {
+			if (map.mapSurface2[x - i][y - j] == FOOD) {
 				
 				// Food color
 				glColor3f(0.35, 0.8, 1.0);
+				char c = map.mapSurface2[x - i][y - j];
+
+				glBegin(GL_QUADS);
+
+				// Sets the poligon vertices
+				glVertex2i(j * HEIGHT / map.ROWS, i * WIDTH / map.COLUMNS2);
+				glVertex2i(j * HEIGHT / map.ROWS, (i + 1) * WIDTH / map.COLUMNS2);
+				glVertex2i((j + 1) * HEIGHT / map.ROWS, (i + 1) * WIDTH / map.COLUMNS2);
+				glVertex2i((j + 1) * HEIGHT / map.ROWS, i * WIDTH / map.COLUMNS2);
+
+				glEnd();
+			}
+			if (map.mapSurface2[x - i][y - j] == PACMAN) {
+				// Pacman color
+				glColor3f(1.0, 1.0, 1.0);
 				char c = map.mapSurface2[x - i][y - j];
 
 				glBegin(GL_QUADS);

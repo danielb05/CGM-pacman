@@ -23,10 +23,17 @@ Rafael Câmara Pereira
 #define MINROWS 10
 #define MINCOLUMNS 10
 
+#define FIXEDWALL 'X'
+#define INNERWALL 'Y'
+#define MOVABLEWALL '1'
+#define FOOD 'F'
+#define PACMAN 'P'
+#define EMPTYSPACE ' '
+
 class Map {
 
 	public:
-		float COLUMNS, ROWS, COLUMNS2;
+		int COLUMNS, ROWS, COLUMNS2;
 		char** mapSurface;
 		char** mapSurface2;
 		int rowHalf;

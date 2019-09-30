@@ -14,12 +14,13 @@ Rafael Câmara Pereira
 
 #include <cmath>
 #include <cstdlib>
-#include <ctime>
+#include "map.h"
 
 class Pacman {
 
 	public:
 		// Positions: 0 = North, 1 = South, 2 = West, 3 = East
-		void born();
+		int pacmanPosition[2];
+		void born(Map map);
 		void walk();
 };

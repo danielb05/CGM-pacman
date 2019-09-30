@@ -42,16 +42,16 @@ void Map::set_values() {
 	}while (invalid);
 	
 	// Sets the variables to draw half map, since the map is mirrored
-	rowHalf = (int)floor(ROWS / 2) - 1;
-	COLUMNS = ceil(COLUMNS2 / 2);
-	columnHalf = (int)COLUMNS - 1;
+	rowHalf = floor(ROWS / 2.0) - 1;
+	COLUMNS = ceil(COLUMNS2 / 2.0);
+	columnHalf = COLUMNS - 1;
 
 	// Creates a matrix corresponding to half map 
-	mapSurface = new char *[(int)ROWS]; //Matrix is now a pointer to an array of 'rows' point
+	mapSurface = new char *[ROWS]; //Matrix is now a pointer to an array of 'rows' point
 
 	for (int i = 0; i < ROWS; i++) {
 
-		mapSurface[i] = new char[(int)COLUMNS];		//the ith array is initialized
+		mapSurface[i] = new char[COLUMNS];		//the ith array is initialized
 	}
 
 	initiateMap();
@@ -68,7 +68,7 @@ void Map::initiateMap() {
 
 		while (j < COLUMNS) {
 
-			mapSurface[i][j] = '1';
+			mapSurface[i][j] = MOVABLEWALL;
 			j++;
 		}
 	}
@@ -86,7 +86,7 @@ void Map::drawBorders() {
 		while (j < COLUMNS) {
 
 			if (i == 0 || j == 0 || i == ROWS - 1)
-				mapSurface[i][j] = 'X';
+				mapSurface[i][j] = FIXEDWALL;
 			else
 				j = COLUMNS;
 
@@ -110,9 +110,9 @@ void Map::drawCenter() {
 	for (int i = rowHalf - 1; i < rowHalf + 3; i++) { // Position the drawer at the y-axis center starting line and move down
 		for (int j = columnHalf; j > columnHalf - 3; j--) { // Position the drawer at the x-axis center and move left
 			if (i == rowHalf + 2 || j == columnHalf - 2 || (i == rowHalf - 1 && j != columnHalf))
-				mapSurface[i][j] = 'X';
+				mapSurface[i][j] = FIXEDWALL;
 			else
-				mapSurface[i][j] = ' ';
+				mapSurface[i][j] = EMPTYSPACE;
 		}
 	}
 }
@@ -157,7 +157,7 @@ void Map::findPaths(int x, int y) {
 	NextDirection next;
 	
 	// Sets the current position to a corridor cell
-	mapSurface[x][y] = ' ';
+	mapSurface[x][y] = FOOD;
 
 	// Randomically selects one way to continue
 	next.startVisiting();
@@ -172,11 +172,11 @@ void Map::findPaths(int x, int y) {
 		case 0:
 			// If the north is selected, sets the sided cells as FIXED walls and generates the north corridor
 			if (x - 1 > 0) {
-				if (mapSurface[x - 1][y] == '1') {
-					if (y - 1 > 0 && mapSurface[x][y - 1] == '1')
-						mapSurface[x][y - 1] = 'Y';
-					if (y + 1 < COLUMNS && mapSurface[x][y + 1] == '1')
-						mapSurface[x][y + 1] = 'Y';
+				if (mapSurface[x - 1][y] == MOVABLEWALL) {
+					if (y - 1 > 0 && mapSurface[x][y - 1] == MOVABLEWALL)
+						mapSurface[x][y - 1] = INNERWALL;
+					if (y + 1 < COLUMNS && mapSurface[x][y + 1] == MOVABLEWALL)
+						mapSurface[x][y + 1] = INNERWALL;
 
 					findPaths(x - 1, y);
 				}
@@ -187,11 +187,11 @@ void Map::findPaths(int x, int y) {
 		case 1:
 			// If the south is selected, sets the sided cells as FIXED walls and generates the south corridor
 			if (x + 1 < ROWS - 1) {
-				if (mapSurface[x + 1][y] == '1') {
-					if (y - 1 > 0 && mapSurface[x][y - 1] == '1')
-						mapSurface[x][y - 1] = 'Y';
-					if (y + 1 < COLUMNS && mapSurface[x][y + 1] == '1')
-						mapSurface[x][y + 1] = 'Y';
+				if (mapSurface[x + 1][y] == MOVABLEWALL) {
+					if (y - 1 > 0 && mapSurface[x][y - 1] == MOVABLEWALL)
+						mapSurface[x][y - 1] = INNERWALL;
+					if (y + 1 < COLUMNS && mapSurface[x][y + 1] == MOVABLEWALL)
+						mapSurface[x][y + 1] = INNERWALL;
 
 					findPaths(x + 1, y);
 				}
@@ -202,11 +202,11 @@ void Map::findPaths(int x, int y) {
 		case 2:
 			// If the west is selected, sets the upper/lower cells as FIXED walls and generates the west corridor
 			if (y - 1 > 0) {
-				if (mapSurface[x][y - 1] == '1') {
-					if (x - 1 > 0 && mapSurface[x - 1][y] == '1')
-						mapSurface[x - 1][y] = 'Y';
-					if (x + 1 < ROWS - 1 && mapSurface[x + 1][y] == '1')
-						mapSurface[x + 1][y] = 'Y';
+				if (mapSurface[x][y - 1] == MOVABLEWALL) {
+					if (x - 1 > 0 && mapSurface[x - 1][y] == MOVABLEWALL)
+						mapSurface[x - 1][y] = INNERWALL;
+					if (x + 1 < ROWS - 1 && mapSurface[x + 1][y] == MOVABLEWALL)
+						mapSurface[x + 1][y] = INNERWALL;
 
 					findPaths(x, y - 1);
 				}
@@ -217,11 +217,11 @@ void Map::findPaths(int x, int y) {
 		case 3:
 			// If the east is selected, sets the upper/lower cells as FIXED walls and generates the east corridor
 			if (y + 1 < COLUMNS) {
-				if (mapSurface[x][y + 1] == '1') {
-					if (x - 1 > 0 && mapSurface[x - 1][y] == '1')
-						mapSurface[x - 1][y] = 'Y';
-					if (x + 1 < ROWS - 1 && mapSurface[x + 1][y] == '1')
-						mapSurface[x + 1][y] = 'Y';
+				if (mapSurface[x][y + 1] == MOVABLEWALL) {
+					if (x - 1 > 0 && mapSurface[x - 1][y] == MOVABLEWALL)
+						mapSurface[x - 1][y] = INNERWALL;
+					if (x + 1 < ROWS - 1 && mapSurface[x + 1][y] == MOVABLEWALL)
+						mapSurface[x + 1][y] = INNERWALL;
 
 					findPaths(x, y + 1);
 				}
@@ -229,10 +229,10 @@ void Map::findPaths(int x, int y) {
 			break;
 		}
 	// Verify if there's yet a neghbor with a non-fixed wall
-	}while((x + 1 < ROWS && mapSurface[x + 1][y] == '1')
-		|| (x - 1 >= 0 && mapSurface[x - 1][y] == '1')
-		|| (y + 1 < COLUMNS && mapSurface[x][y + 1] == '1')
-		|| (y - 1 >= 0 && mapSurface[x][y - 1] == '1'));
+	}while((x + 1 < ROWS && mapSurface[x + 1][y] == MOVABLEWALL)
+		|| (x - 1 >= 0 && mapSurface[x - 1][y] == MOVABLEWALL)
+		|| (y + 1 < COLUMNS && mapSurface[x][y + 1] == MOVABLEWALL)
+		|| (y - 1 >= 0 && mapSurface[x][y - 1] == MOVABLEWALL));
 }
 
 // Used to find and eliminate unreachable areas on the map
@@ -241,7 +241,7 @@ void Map::breakWalls() {
 	// Looks for non-fixed walls to convert
 	for (int i = 1; i < ROWS - 1; i++) {
 		for (int j = 1; j < COLUMNS; j++) {
-			if (mapSurface[i][j] == '1')
+			if (mapSurface[i][j] == MOVABLEWALL)
 				findPaths(i, j);
 		}
 	}
@@ -251,50 +251,50 @@ void Map::breakWalls() {
 			int count = 0;
 
 			// Verify if the cell is isolated, if so, remove 1 or 2 walls from the neighbours
-			if (mapSurface[i][j] == ' ') {
-				if (mapSurface[i + 1][j] != ' ') {
+			if (mapSurface[i][j] == FOOD) {
+				if (mapSurface[i + 1][j] != FOOD) {
 
 					count++;
 				}
-				if (mapSurface[i - 1][j] != ' ') {
+				if (mapSurface[i - 1][j] != FOOD) {
 
 					count++;
 				}
-				if (mapSurface[i][j + 1] != ' ') {
+				if (mapSurface[i][j + 1] != FOOD) {
 
 					count++;
 				}
-				if (mapSurface[i][j - 1] != ' ') {
+				if (mapSurface[i][j - 1] != FOOD) {
 
 					count++;
 				}
 
 				if (count == 4) {
-					if (mapSurface[i + 1][j] == 'Y') {
+					if (mapSurface[i + 1][j] == INNERWALL) {
 
-						mapSurface[i + 1][j] = ' ';
-					} else if (mapSurface[i - 1][j] == 'Y') {
+						mapSurface[i + 1][j] = FOOD;
+					} else if (mapSurface[i - 1][j] == INNERWALL) {
 
-						mapSurface[i - 1][j] = ' ';
-					} if (mapSurface[i][j + 1] == 'Y') {
+						mapSurface[i - 1][j] = FOOD;
+					} if (mapSurface[i][j + 1] == INNERWALL) {
 
-						mapSurface[i][j + 1] = ' ';
-					} else if (mapSurface[i][j - 1] == 'Y') {
+						mapSurface[i][j + 1] = FOOD;
+					} else if (mapSurface[i][j - 1] == INNERWALL) {
 
-						mapSurface[i][j - 1] = ' ';
+						mapSurface[i][j - 1] = FOOD;
 					}
 				}
 				
 				if (count == 3) {
-					if (mapSurface[i + 1][j] == 'Y') {
+					if (mapSurface[i + 1][j] == INNERWALL) {
 
-						mapSurface[i + 1][j] = ' ';
-					} else if (mapSurface[i][j + 1] == 'Y') {
+						mapSurface[i + 1][j] = FOOD;
+					} else if (mapSurface[i][j + 1] == INNERWALL) {
 
-						mapSurface[i][j + 1] = ' ';
-					} else if (mapSurface[i - 1][j] == 'Y') {
+						mapSurface[i][j + 1] = FOOD;
+					} else if (mapSurface[i - 1][j] == INNERWALL) {
 
-						mapSurface[i - 1][j] = ' ';
+						mapSurface[i - 1][j] = FOOD;
 					}
 				}
 			}
@@ -310,5 +310,5 @@ void Map::draw() {
 	findPaths(rowHalf-1, columnHalf);
 	breakWalls();
 	mirror();
-	showTextMap();
+	//showTextMap();
 }
