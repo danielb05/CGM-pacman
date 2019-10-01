@@ -1,21 +1,21 @@
+#pragma once
+
 /*
 03/10/2019
-
 Universitat de Lleida
 Computer Graphics and Multimedia
-
 Task 2 - Pacman food and characters implementation
-
 Students:
 Daniel Vieira Cordeiro
-Rafael Câmara Pereira
-
+Rafael C�mara Pereira
 */
 
 #include <iostream>
 #include <string>
 #include <cmath>
 #include "next_direction.h"
+#include "pacman.h"
+#include "ghost.h"
 
 // Define constants for poligon size and map constraints
 #define MAXROWS 50
@@ -29,24 +29,29 @@ Rafael Câmara Pereira
 #define FOOD 'F'
 #define PACMAN 'P'
 #define EMPTYSPACE ' '
+#define GHOST 'G'
 
 class Map {
 
-	public:
-		int COLUMNS, ROWS, COLUMNS2;
-		char** mapSurface;
-		char** mapSurface2;
-		int rowHalf;
-		int columnHalf;
+public:
+	int COLUMNS, ROWS, COLUMNS2;
+	char** mapSurface;
+	char** mapSurface2;
+	int rowHalf;
+	int columnHalf;
+	int  startingPoint[2];
 
-	public:
-		void set_values();
-		void initiateMap();
-		void drawBorders();
-		void drawCenter();
-		void mirror();
-		void showTextMap();
-		void draw();
-		void findPaths(int x, int y);
-		void breakWalls();
+public:
+	void set_values();
+	void initiateMap();
+	void drawBorders();
+	void drawCenter();
+	void mirror();
+	void showTextMap();
+	void draw();
+	void findPaths(int x, int y);
+	void breakWalls();
+	void addCharacters(Ghost g, Pacman p);
+	void findStartingPoint();
 };
+

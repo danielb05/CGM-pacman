@@ -1,18 +1,16 @@
+#include "stdafx.h"
+#include "map.h"
+
+
 /*
 03/10/2019
-
 Universitat de Lleida
 Computer Graphics and Multimedia
-
 Task 2 - Pacman food and characters implementation
-
 Students:
 Daniel Vieira Cordeiro
-Rafael CÃ¢mara Pereira
-
+Rafael Câmara Pereira
 */
-
-#include "map.h"
 
 using namespace std;
 
@@ -28,7 +26,7 @@ void Map::set_values() {
 
 		if (ROWS >= MINROWS && ROWS <= MAXROWS)
 			invalid = false;
-	}while (invalid);
+	} while (invalid);
 
 	invalid = true;
 
@@ -39,8 +37,8 @@ void Map::set_values() {
 
 		if (COLUMNS2 >= MINCOLUMNS && COLUMNS2 <= MAXCOLUMNS)
 			invalid = false;
-	}while (invalid);
-	
+	} while (invalid);
+
 	// Sets the variables to draw half map, since the map is mirrored
 	rowHalf = floor(ROWS / 2.0) - 1;
 	COLUMNS = ceil(COLUMNS2 / 2.0);
@@ -155,20 +153,20 @@ void Map::findPaths(int x, int y) {
 
 	int direction;
 	NextDirection next;
-	
-	// Sets the current position to a corridor cell
+
+	// Sets the current position to a corridor cell inserting a food on it
 	mapSurface[x][y] = FOOD;
 
 	// Randomically selects one way to continue
 	next.startVisiting();
-	
-	do{
-		
+
+	do {
+
 		direction = next.randomize();
 		// Choose the next block to be digged according to the random direction in 'direction'
 		switch (direction) {
-		
-		//North
+
+			//North
 		case 0:
 			// If the north is selected, sets the sided cells as FIXED walls and generates the north corridor
 			if (x - 1 > 0) {
@@ -182,8 +180,8 @@ void Map::findPaths(int x, int y) {
 				}
 			}
 			break;
-		
-		//South
+
+			//South
 		case 1:
 			// If the south is selected, sets the sided cells as FIXED walls and generates the south corridor
 			if (x + 1 < ROWS - 1) {
@@ -197,8 +195,8 @@ void Map::findPaths(int x, int y) {
 				}
 			}
 			break;
-			
-		//West
+
+			//West
 		case 2:
 			// If the west is selected, sets the upper/lower cells as FIXED walls and generates the west corridor
 			if (y - 1 > 0) {
@@ -212,8 +210,8 @@ void Map::findPaths(int x, int y) {
 				}
 			}
 			break;
-			
-		//East
+
+			//East
 		case 3:
 			// If the east is selected, sets the upper/lower cells as FIXED walls and generates the east corridor
 			if (y + 1 < COLUMNS) {
@@ -228,8 +226,8 @@ void Map::findPaths(int x, int y) {
 			}
 			break;
 		}
-	// Verify if there's yet a neghbor with a non-fixed wall
-	}while((x + 1 < ROWS && mapSurface[x + 1][y] == MOVABLEWALL)
+		// Verify if there's yet a neghbor with a non-fixed wall
+	} while ((x + 1 < ROWS && mapSurface[x + 1][y] == MOVABLEWALL)
 		|| (x - 1 >= 0 && mapSurface[x - 1][y] == MOVABLEWALL)
 		|| (y + 1 < COLUMNS && mapSurface[x][y + 1] == MOVABLEWALL)
 		|| (y - 1 >= 0 && mapSurface[x][y - 1] == MOVABLEWALL));
@@ -273,26 +271,30 @@ void Map::breakWalls() {
 					if (mapSurface[i + 1][j] == INNERWALL) {
 
 						mapSurface[i + 1][j] = FOOD;
-					} else if (mapSurface[i - 1][j] == INNERWALL) {
+					}
+					else if (mapSurface[i - 1][j] == INNERWALL) {
 
 						mapSurface[i - 1][j] = FOOD;
 					} if (mapSurface[i][j + 1] == INNERWALL) {
 
 						mapSurface[i][j + 1] = FOOD;
-					} else if (mapSurface[i][j - 1] == INNERWALL) {
+					}
+					else if (mapSurface[i][j - 1] == INNERWALL) {
 
 						mapSurface[i][j - 1] = FOOD;
 					}
 				}
-				
+
 				if (count == 3) {
 					if (mapSurface[i + 1][j] == INNERWALL) {
 
 						mapSurface[i + 1][j] = FOOD;
-					} else if (mapSurface[i][j + 1] == INNERWALL) {
+					}
+					else if (mapSurface[i][j + 1] == INNERWALL) {
 
 						mapSurface[i][j + 1] = FOOD;
-					} else if (mapSurface[i - 1][j] == INNERWALL) {
+					}
+					else if (mapSurface[i - 1][j] == INNERWALL) {
 
 						mapSurface[i - 1][j] = FOOD;
 					}
@@ -307,8 +309,34 @@ void Map::draw() {
 
 	drawBorders();
 	drawCenter();
-	findPaths(rowHalf-1, columnHalf);
+	findPaths(rowHalf - 1, columnHalf);
 	breakWalls();
 	mirror();
+	findStartingPoint();
 	//showTextMap();
+}
+
+// ---------------------
+void Map::addCharacters(Ghost g, Pacman p) {
+
+	mapSurface2[g.ghostRow][g.ghostColumn] = GHOST;
+	mapSurface2[p.pacmanRow][p.pacmanColumn] = PACMAN;
+}
+
+void Map::findStartingPoint() {
+	
+	bool finding = true;
+
+	while (finding)
+	{
+		for (int i = 0; i < ROWS; i++) {
+			for (int j = 0; j < COLUMNS2; j++) {
+				if (mapSurface2[i][j] == FOOD) {
+					finding = false;
+					startingPoint[0] = i;
+					startingPoint[1] = j;
+				}
+			}
+		}
+	}
 }
