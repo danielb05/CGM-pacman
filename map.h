@@ -7,12 +7,13 @@ Computer Graphics and Multimedia
 Task 2 - Pacman food and characters implementation
 Students:
 Daniel Vieira Cordeiro
-Rafael Câmara Pereira
+Rafael CÃ¢mara Pereira
 */
 
 #include <iostream>
 #include <string>
 #include <cmath>
+#include <vector>
 #include "next_direction.h"
 #include "pacman.h"
 #include "ghost.h"
@@ -53,5 +54,5 @@ public:
 	void breakWalls();
 	void addCharacters(Ghost g, Pacman p);
 	void findStartingPoint();
+	int getNextWall(int x, int y, int direction);
 };
-

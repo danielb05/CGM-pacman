@@ -7,7 +7,7 @@ Computer Graphics and Multimedia
 Task 2 - Pacman food and characters implementation
 Students:
 Daniel Vieira Cordeiro
-Rafael Câmara Pereira
+Rafael CÃ¢mara Pereira
 */
 
 #include <cmath>

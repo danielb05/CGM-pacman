@@ -1,4 +1,4 @@
-#include "stdafx.h"
+//#include "stdafx.h"
 #include "map.h"
 
 
@@ -9,7 +9,7 @@ Computer Graphics and Multimedia
 Task 2 - Pacman food and characters implementation
 Students:
 Daniel Vieira Cordeiro
-Rafael Câmara Pereira
+Rafael CÃ¢mara Pereira
 */
 
 using namespace std;
@@ -325,18 +325,49 @@ void Map::addCharacters(Ghost g, Pacman p) {
 
 void Map::findStartingPoint() {
 	
-	bool finding = true;
-
-	while (finding)
-	{
-		for (int i = 0; i < ROWS; i++) {
-			for (int j = 0; j < COLUMNS2; j++) {
-				if (mapSurface2[i][j] == FOOD) {
-					finding = false;
-					startingPoint[0] = i;
-					startingPoint[1] = j;
-				}
+	for (int i = 0; i < ROWS; i++) {
+		for (int j = 0; j < COLUMNS2; j++) {
+			if (mapSurface2[i][j] == FOOD) {
+				startingPoint[0] = i;
+				startingPoint[1] = j;
+				return;
 			}
 		}
 	}
+}
+
+int Map::getNextWall(int x, int y, int direction){
+	
+	switch (direction) {
+
+		//North
+		case 0:
+			
+			for(int i = x; i >= 0; i--)
+				if(mapSurface2[i][y] == INNERWALL || mapSurface2[i][y] == FIXEDWALL)
+					return i + 1;
+			break;
+
+		//South
+		case 1:
+			for(int i = x; i < ROWS; i++)
+				if(mapSurface2[i][y] == INNERWALL || mapSurface2[i][y] == FIXEDWALL)
+					return i - 1;
+			break;
+
+		//West
+		case 2:
+			for(int j = y; j < 0; j--)
+				if(mapSurface2[x][j] == INNERWALL || mapSurface2[x][j] == FIXEDWALL)
+					return j + 1;
+			break;
+
+		//East
+		case 3:
+			for(int j = y; j < COLUMNS2; j++)
+				if(mapSurface2[x][j] == INNERWALL || mapSurface2[x][j] == FIXEDWALL)
+					return j - 1;
+			break;
+		}
+	return 0;
 }
