@@ -313,16 +313,20 @@ void Map::draw() {
 	breakWalls();
 	mirror();
 	findStartingPoint();
+	//addCharacters();
 	//showTextMap();
 }
 
-// ---------------------
-void Map::addCharacters(Ghost g, Pacman p) {
+// Creates 1 Ghost and 1 Pacman and adds them to the map
+void Map::updateCharacters(int ghostX, int ghostY, int pacmanX, int pacmanY) {
 
-	mapSurface2[g.ghostRow][g.ghostColumn] = GHOST;
-	mapSurface2[p.pacmanRow][p.pacmanColumn] = PACMAN;
+	//showTextMap();
+	mapSurface2[ghostX][ghostY] = GHOST;
+	mapSurface2[pacmanX][pacmanY] = PACMAN;
+	showTextMap();
 }
 
+// Finds a starting point for the pacman character
 void Map::findStartingPoint() {
 	
 	for (int i = 0; i < ROWS; i++) {
@@ -336,38 +340,45 @@ void Map::findStartingPoint() {
 	}
 }
 
-int Map::getNextWall(int x, int y, int direction){
-	
+// ---------------------
+void Map::addCharacters(Ghost g, int pacmanRow, int pacmanColumn) {
+
+	mapSurface2[g.ghostRow][g.ghostColumn] = GHOST;
+	mapSurface2[pacmanRow][pacmanColumn] = PACMAN;
+}
+
+int Map::getNextWall(int x, int y, int direction) {
+
 	switch (direction) {
 
 		//North
-		case 0:
-			
-			for(int i = x; i >= 0; i--)
-				if(mapSurface2[i][y] == INNERWALL || mapSurface2[i][y] == FIXEDWALL)
-					return i + 1;
-			break;
+	case 0:
+
+		for (int i = x; i >= 0; i--)
+			if (mapSurface2[i][y] == INNERWALL || mapSurface2[i][y] == FIXEDWALL)
+				return i + 1;
+		break;
 
 		//South
-		case 1:
-			for(int i = x; i < ROWS; i++)
-				if(mapSurface2[i][y] == INNERWALL || mapSurface2[i][y] == FIXEDWALL)
-					return i - 1;
-			break;
+	case 1:
+		for (int i = x; i < ROWS; i++)
+			if (mapSurface2[i][y] == INNERWALL || mapSurface2[i][y] == FIXEDWALL)
+				return i - 1;
+		break;
 
 		//West
-		case 2:
-			for(int j = y; j >= 0; j--)
-				if(mapSurface2[x][j] == INNERWALL || mapSurface2[x][j] == FIXEDWALL)
-					return j + 1;
-			break;
+	case 2:
+		for (int j = y; j >= 0; j--)
+			if (mapSurface2[x][j] == INNERWALL || mapSurface2[x][j] == FIXEDWALL)
+				return j + 1;
+		break;
 
 		//East
-		case 3:
-			for(int j = y; j < COLUMNS2; j++)
-				if(mapSurface2[x][j] == INNERWALL || mapSurface2[x][j] == FIXEDWALL)
-					return j - 1;
-			break;
-		}
+	case 3:
+		for (int j = y; j < COLUMNS2; j++)
+			if (mapSurface2[x][j] == INNERWALL || mapSurface2[x][j] == FIXEDWALL)
+				return j - 1;
+		break;
+	}
 	return 0;
 }

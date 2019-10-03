@@ -32,10 +32,10 @@ public:
 
 	float destinationWidth;
 	float destinationHeight;
-	
+
 	float velocityRow;
 	float velocityColumn;
-	
+
 	long remainingTime;
 
 	bool isMoving;

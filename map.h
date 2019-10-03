@@ -15,7 +15,6 @@ Rafael Câmara Pereira
 #include <cmath>
 #include <vector>
 #include "next_direction.h"
-#include "pacman.h"
 #include "ghost.h"
 
 // Define constants for poligon size and map constraints
@@ -52,7 +51,8 @@ public:
 	void draw();
 	void findPaths(int x, int y);
 	void breakWalls();
-	void addCharacters(Ghost g, Pacman p);
+	void updateCharacters(int ghostX, int ghostY, int pacmanX, int pacmanY);
 	void findStartingPoint();
+	void addCharacters(Ghost g, int pacmanRow, int pacmanColumn);
 	int getNextWall(int x, int y, int direction);
 };

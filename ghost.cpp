@@ -1,7 +1,11 @@
 //#include "stdafx.h"
+
+#include "ghost.h"
+
+
 #include "ghost.h"
 #include <iostream>
-Ghost::Ghost(){
+Ghost::Ghost() {
 	ghostRow = 0;
 	ghostColumn = 0;
 	ghostDestinationRow = 0;
@@ -17,17 +21,17 @@ Ghost::Ghost(){
 	remainingTime = 0.0;
 }
 
-void Ghost::setPosition(int ghostRow, int ghostColumn){
+void Ghost::setPosition(int ghostRow, int ghostColumn) {
 	this->ghostRow = ghostRow;
 	this->ghostColumn = ghostColumn;
 	displayHeight = ghostRow * 20;
 	displayWidth = ghostColumn * 20;
 }
 
-void Ghost::startWalk(){
+void Ghost::startWalk() {
 
 	setVectorPoints();
-	
+
 	velocityRow = (destinationHeight - displayHeight) / (pathDistance * GHOST_VELOCITY);
 	velocityColumn = (destinationWidth - displayWidth) / (pathDistance * GHOST_VELOCITY);
 
@@ -35,43 +39,44 @@ void Ghost::startWalk(){
 	remainingTime = pathDistance * GHOST_VELOCITY;
 }
 
-void Ghost::refreshWalk(long elapsedTime){
+void Ghost::refreshWalk(long elapsedTime) {
 
-	if(isMoving)
-		if(elapsedTime < remainingTime){
-		
+	if (isMoving)
+		if (elapsedTime < remainingTime) {
+
 			displayHeight += velocityRow * elapsedTime;
 			displayWidth += velocityColumn * elapsedTime;
 			remainingTime -= elapsedTime;
-//std::cout << "Width: " << displayWidth << " Height: " << displayHeight << "\n";
-		} else if(elapsedTime >= remainingTime) {
-		
+			//std::cout << "Width: " << displayWidth << " Height: " << displayHeight << "\n";
+		}
+		else if (elapsedTime >= remainingTime) {
+
 			displayHeight += velocityRow * remainingTime;
 			displayWidth += velocityColumn * remainingTime;
 			ghostRow = ghostDestinationRow;
 			ghostColumn = ghostDestinationColumn;
 			isMoving = false;
-//std::cout << "Width: " << displayWidth << " Height: " << displayHeight << "\n";
+			//std::cout << "Width: " << displayWidth << " Height: " << displayHeight << "\n";
 		}
 }
 
-void Ghost::setVectorPoints(){
-	
+void Ghost::setVectorPoints() {
+
 	displayHeight = ghostRow * 20;
 	displayWidth = ghostColumn * 20;
 
 	destinationHeight = ghostDestinationRow * 20;
 	destinationWidth = ghostDestinationColumn * 20;
-	
-	if(ghostDestinationRow > ghostRow)
+
+	if (ghostDestinationRow > ghostRow)
 		pathDistance = (ghostDestinationRow - ghostRow);
-	else 
+	else
 		pathDistance = (ghostRow - ghostDestinationRow);
-	
-	if(ghostDestinationColumn > ghostColumn)
+
+	if (ghostDestinationColumn > ghostColumn)
 		pathDistance += (ghostDestinationColumn - ghostColumn);
 	else
 		pathDistance += (ghostColumn - ghostDestinationColumn);
-	
-//std::cout << "Distance: " << pathDistance << "\n";
+
+	//std::cout << "Distance: " << pathDistance << "\n";
 }
