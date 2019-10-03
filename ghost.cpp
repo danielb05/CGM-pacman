@@ -1,3 +1,5 @@
+//#include "stdafx.h"
+
 /*
 03/10/2019
 Universitat de Lleida
@@ -5,13 +7,10 @@ Computer Graphics and Multimedia
 Task 2 - Pacman food and characters implementation
 Students:
 Daniel Vieira Cordeiro
-Rafael Câmara Pereira
+Rafael C�mara Pereira
 */
 
-#include "stdafx.h"
-
 #include "ghost.h"
-//#include <iostream>
 
 Ghost::Ghost() {
 	ghostRow = 0;
@@ -55,7 +54,6 @@ void Ghost::refreshWalk(long elapsedTime) {
 			displayHeight += velocityRow * elapsedTime;
 			displayWidth += velocityColumn * elapsedTime;
 			remainingTime -= elapsedTime;
-			//std::cout << "Width: " << displayWidth << " Height: " << displayHeight << "\n";
 		}
 		else if (elapsedTime >= remainingTime) {
 
@@ -64,7 +62,6 @@ void Ghost::refreshWalk(long elapsedTime) {
 			ghostRow = ghostDestinationRow;
 			ghostColumn = ghostDestinationColumn;
 			isMoving = false;
-			//std::cout << "Width: " << displayWidth << " Height: " << displayHeight << "\n";
 		}
 }
 
@@ -85,6 +82,4 @@ void Ghost::setVectorPoints() {
 		pathDistance += (ghostDestinationColumn - ghostColumn);
 	else
 		pathDistance += (ghostColumn - ghostDestinationColumn);
-
-	//std::cout << "Distance: " << pathDistance << "\n";
 }

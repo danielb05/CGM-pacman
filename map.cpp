@@ -1,3 +1,5 @@
+//#include "stdafx.h"
+
 /*
 03/10/2019
 Universitat de Lleida
@@ -5,10 +7,9 @@ Computer Graphics and Multimedia
 Task 2 - Pacman food and characters implementation
 Students:
 Daniel Vieira Cordeiro
-Rafael Câmara Pereira
+Rafael C�mara Pereira
 */
 
-#include "stdafx.h"
 #include "map.h"
 
 using namespace std;
@@ -352,32 +353,35 @@ int Map::getNextWall(int x, int y, int direction) {
 
 		//North
 	case 0:
-
-		for (int i = x; i >= 0; i--)
-			if (mapSurface2[i][y] == INNERWALL || mapSurface2[i][y] == FIXEDWALL)
-				return i + 1;
+		
+		if (mapSurface2[x - 1][y] != INNERWALL && mapSurface2[x - 1][y] != FIXEDWALL)
+			return x - 1;
+		else
+			return x;
 		break;
 
 		//South
 	case 1:
-		for (int i = x; i < ROWS; i++)
-			if (mapSurface2[i][y] == INNERWALL || mapSurface2[i][y] == FIXEDWALL)
-				return i - 1;
+		if (mapSurface2[x + 1][y] != INNERWALL && mapSurface2[x + 1][y] != FIXEDWALL)
+			return x + 1;
+		else
+			return x;
 		break;
 
 		//West
 	case 2:
-		for (int j = y; j >= 0; j--)
-			if (mapSurface2[x][j] == INNERWALL || mapSurface2[x][j] == FIXEDWALL)
-				return j + 1;
+		if (mapSurface2[x][y - 1] != INNERWALL && mapSurface2[x][y - 1] != FIXEDWALL)
+			return y - 1;
+		else
+			return y;
 		break;
 
 		//East
 	case 3:
-		for (int j = y; j < COLUMNS2; j++)
-			if (mapSurface2[x][j] == INNERWALL || mapSurface2[x][j] == FIXEDWALL)
-				return j - 1;
-		break;
+		if (mapSurface2[x][y + 1] != INNERWALL && mapSurface2[x][y + 1] != FIXEDWALL)
+			return y + 1;
+		else
+			return y;
 	}
 	return 0;
 }
