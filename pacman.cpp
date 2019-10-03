@@ -1,20 +1,11 @@
 //#include "stdafx.h"
 
-/*
-03/10/2019
-Universitat de Lleida
-Computer Graphics and Multimedia
-Task 2 - Pacman food and characters implementation
-Students:
-Daniel Vieira Cordeiro
-Rafael C�mara Pereira
-*/
 
 #include "pacman.h"
 
 using namespace std;
 
-Pacman::Pacman(Map m) {
+Pacman::Pacman() {
 
 	pacmanRow = 0;
 	pacmanColumn = 0;
@@ -29,6 +20,9 @@ Pacman::Pacman(Map m) {
 	velocityRow = 0.0;
 	velocityColumn = 0.0;
 	remainingTime = 0.0;
+}
+
+void Pacman::addMap(Map m) {
 	map = m;
 }
 
@@ -39,7 +33,7 @@ void Pacman::setPosition(int pacmanRow, int pacmanColumn)
 	displayHeight = pacmanRow * 20;
 	displayWidth = pacmanColumn * 20;
 
-	//nextPosition();
+	nextPosition();
 }
 
 // Sorts the next direction of Pacman
@@ -181,10 +175,8 @@ void Pacman::refreshWalk(long elapsedTime) {
 			pacmanRow = pacmanDestinationRow;
 			pacmanColumn = pacmanDestinationColumn;
 			isMoving = false;
+			nextPosition();
 		}
-	}
-	else {
-		nextPosition();
 	}
 }
 

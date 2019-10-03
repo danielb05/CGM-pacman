@@ -1,19 +1,9 @@
 #pragma once
 
-/*
-03/10/2019
-Universitat de Lleida
-Computer Graphics and Multimedia
-Task 2 - Pacman food and characters implementation
-Students:
-Daniel Vieira Cordeiro
-Rafael Câmara Pereira
-*/
 
 #include <iostream>
 #include <string>
 #include <cmath>
-#include <vector>
 #include "next_direction.h"
 #include "ghost.h"
 
@@ -56,3 +46,4 @@ public:
 	void addCharacters(Ghost g, int pacmanRow, int pacmanColumn);
 	int getNextWall(int x, int y, int direction);
 };
+
