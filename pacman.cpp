@@ -53,6 +53,9 @@ void Pacman::nextPosition() {
 	NextDirection next;
 	next.startVisiting();
 	direction = lastDirection;
+	
+	// next direction completely random
+	//direction = next.randomize();
 
 	do {		
 
