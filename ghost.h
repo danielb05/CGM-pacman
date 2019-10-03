@@ -13,7 +13,8 @@ Rafael Câmara Pereira
 #include <cmath>
 #include <cstdlib>
 
-#define GHOST_VELOCITY 1000
+//Time constant in millisseconds for the ghost to pass between cells
+#define GHOST_VELOCITY 150
 
 class Ghost
 {
@@ -23,6 +24,8 @@ public:
 
 	int ghostDestinationRow;
 	int ghostDestinationColumn;
+
+	int pathDistance;
 
 	float displayWidth;
 	float displayHeight;

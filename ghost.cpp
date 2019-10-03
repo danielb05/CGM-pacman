@@ -6,6 +6,7 @@ Ghost::Ghost(){
 	ghostColumn = 0;
 	ghostDestinationRow = 0;
 	ghostDestinationColumn = 0;
+	pathDistance = 0;
 	isMoving = false;
 	displayWidth = 0.0;
 	displayHeight = 0.0;
@@ -27,11 +28,11 @@ void Ghost::startWalk(){
 
 	setVectorPoints();
 	
-	velocityRow = (destinationHeight - displayHeight) / GHOST_VELOCITY;
-	velocityColumn = (destinationWidth - displayWidth) / GHOST_VELOCITY;
+	velocityRow = (destinationHeight - displayHeight) / (pathDistance * GHOST_VELOCITY);
+	velocityColumn = (destinationWidth - displayWidth) / (pathDistance * GHOST_VELOCITY);
 
 	isMoving = true;
-	remainingTime = GHOST_VELOCITY;
+	remainingTime = pathDistance * GHOST_VELOCITY;
 }
 
 void Ghost::refreshWalk(long elapsedTime){
@@ -61,4 +62,16 @@ void Ghost::setVectorPoints(){
 
 	destinationHeight = ghostDestinationRow * 20;
 	destinationWidth = ghostDestinationColumn * 20;
+	
+	if(ghostDestinationRow > ghostRow)
+		pathDistance = (ghostDestinationRow - ghostRow);
+	else 
+		pathDistance = (ghostRow - ghostDestinationRow);
+	
+	if(ghostDestinationColumn > ghostColumn)
+		pathDistance += (ghostDestinationColumn - ghostColumn);
+	else
+		pathDistance += (ghostColumn - ghostDestinationColumn);
+	
+//std::cout << "Distance: " << pathDistance << "\n";
 }

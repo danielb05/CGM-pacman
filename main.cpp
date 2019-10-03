@@ -82,7 +82,7 @@ int main(int argc, char *argv[]) {
 	glutIdleFunc(idle);
 
 	glMatrixMode(GL_PROJECTION);
-	gluOrtho2D(WIDTH - 1, 0, 0, HEIGHT - 1);
+	gluOrtho2D(0, HEIGHT - 1, WIDTH - 1, 0);
 
 	glutMainLoop();
 
@@ -103,10 +103,10 @@ void display() {
 
 	for (int i = 0; i < map.ROWS; i++) {
 		for (int j = 0; j < map.COLUMNS2; j++) {
-			if (map.mapSurface2[x - i][y - j] == FIXEDWALL || map.mapSurface2[x - i][y - j] == INNERWALL) {
+			if (map.mapSurface2[i][j] == FIXEDWALL || map.mapSurface2[i][j] == INNERWALL) {
 				// Walls color
 				glColor3f(0.25, 0.25, 1.0);
-				char c = map.mapSurface2[x - i][y - j];
+				char c = map.mapSurface2[i][j];
 
 				glBegin(GL_QUADS);
 
@@ -119,11 +119,11 @@ void display() {
 				glEnd();
 			}
 
-			if (map.mapSurface2[x - i][y - j] == FOOD) {
+			if (map.mapSurface2[i][j] == FOOD) {
 
 				// Food color
 				glColor3f(0.35, 0.8, 1.0);
-				char c = map.mapSurface2[x - i][y - j];
+				char c = map.mapSurface2[i][j];
 
 				glBegin(GL_QUADS);
 
@@ -140,9 +140,9 @@ void display() {
 
 				glEnd();
 			}
-			if (map.mapSurface2[x - i][y - j] == PACMAN || map.mapSurface2[x - i][y - j] == GHOST) {
+			if (map.mapSurface2[i][j] == PACMAN || map.mapSurface2[i][j] == GHOST) {
 				
-				if (map.mapSurface2[x - i][y - j] == PACMAN) {
+				if (map.mapSurface2[i][j] == PACMAN) {
 					// Pacman color
 					glColor3f(1.0, 1.0, 0.0);
 				glBegin(GL_QUADS);
