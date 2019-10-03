@@ -1,5 +1,14 @@
-//#include "stdafx.h"
+/*
+03/10/2019
+Universitat de Lleida
+Computer Graphics and Multimedia
+Task 2 - Pacman food and characters implementation
+Students:
+Daniel Vieira Cordeiro
+Rafael Câmara Pereira
+*/
 
+#include "stdafx.h"
 
 #include "pacman.h"
 
@@ -120,7 +129,7 @@ void Pacman::nextPosition() {
 			//East
 		case 3:
 			// If the east is selected, sets the upper/lower cells as FIXED walls and generates the east corridor
-			if (pacmanColumn + 1 < map.COLUMNS) {
+			if (pacmanColumn + 1 < map.COLUMNS2) {
 				if (map.mapSurface2[pacmanRow][pacmanColumn + 1] == FOOD || map.mapSurface2[pacmanRow][pacmanColumn + 1] == EMPTYSPACE) {
 					map.mapSurface2[pacmanRow][pacmanColumn] = EMPTYSPACE;
 					pacmanDestinationRow = pacmanRow;
