@@ -145,16 +145,9 @@ void display() {
 				if (map.mapSurface2[x - i][y - j] == PACMAN) {
 					// Pacman color
 					glColor3f(1.0, 1.0, 0.0);
-				}
-				else {
-					glColor3f(0.86, 0.86, 0.86);
-				}
-
-				char c = map.mapSurface2[x - i][y - j];
-
 				glBegin(GL_QUADS);
-
-				// Sets the poligon vertices
+	
+									// Sets the poligon vertices
 //cout << "(" << (j * HEIGHT / map.ROWS) + CHARACTERHEIGHT << ", " << (i * WIDTH / map.COLUMNS2) + CHARACTERWIDTH << ")\n";
 				glVertex2i((j * HEIGHT / map.ROWS) + CHARACTERHEIGHT, (i * WIDTH / map.COLUMNS2) + CHARACTERWIDTH); //1
 //cout << "(" << (j * HEIGHT / map.ROWS) + CHARACTERHEIGHT << ", " << ((i + 1) * WIDTH / map.COLUMNS2) - CHARACTERWIDTH << ")\n";
@@ -163,43 +156,63 @@ void display() {
 				glVertex2i(((j + 1) * HEIGHT / map.ROWS) - CHARACTERHEIGHT, ((i + 1) * WIDTH / map.COLUMNS2) - CHARACTERWIDTH); //3
 //cout << "(" << ((j + 1) * HEIGHT / map.ROWS) - CHARACTERHEIGHT << ", " << (i * WIDTH / map.COLUMNS2) + CHARACTERWIDTH << ")\n";
 				glVertex2i(((j + 1) * HEIGHT / map.ROWS) - CHARACTERHEIGHT, (i * WIDTH / map.COLUMNS2) + CHARACTERWIDTH); //4
-				
+
+				} else {
+					glColor3f(0.86, 0.86, 0.86);
+					glBegin(GL_QUADS);
+					glVertex2i(ghost1.displayWidth + CHARACTERHEIGHT, ghost1.displayHeight + CHARACTERWIDTH); //1
+					glVertex2i(ghost1.displayWidth + CHARACTERHEIGHT, ghost1.displayHeight + BLOCKHEIGHT - CHARACTERWIDTH); //2
+					glVertex2i(ghost1.displayWidth + BLOCKWIDTH - CHARACTERHEIGHT, ghost1.displayHeight + BLOCKHEIGHT - CHARACTERWIDTH); //3
+					glVertex2i(ghost1.displayWidth + BLOCKWIDTH - CHARACTERHEIGHT, ghost1.displayHeight + CHARACTERWIDTH); //4
+				}
+
 				glEnd();
 			}
 		}
 	}
 
+/*
+glColor3f(0.86, 0.86, 0.86);
+glBegin(GL_QUADS);
+glVertex2i(ghost1.displayWidth + CHARACTERHEIGHT, ghost1.displayHeight + CHARACTERWIDTH); //1
+glVertex2i(ghost1.displayWidth + CHARACTERHEIGHT, ghost1.displayHeight + BLOCKHEIGHT - CHARACTERWIDTH); //2
+glVertex2i(ghost1.displayWidth + BLOCKWIDTH - CHARACTERHEIGHT, ghost1.displayHeight + BLOCKHEIGHT - CHARACTERWIDTH); //3
+glVertex2i(ghost1.displayWidth + BLOCKWIDTH - CHARACTERHEIGHT, ghost1.displayHeight + CHARACTERWIDTH); //4	
+glEnd();
+*/
 	glutSwapBuffers();
 }
 
 void keyboard(int key,int x,int y){
 
-	int finalPoint[2] = {x, y};
+	int finalPoint[2] = {ghost1.ghostRow, ghost1.ghostColumn};
 		
 	switch(key){
 		case GLUT_KEY_UP:
 //cout << "keyUP\n";
-			finalPoint[1] = map.getNextWall(ghost1.ghostRow, ghost1.ghostColumn, 0);
+			finalPoint[0] = map.getNextWall(ghost1.ghostRow, ghost1.ghostColumn, 0);
 			break;
 
 		case GLUT_KEY_DOWN:
 //cout << "keyDOWN\n";
-			finalPoint[1] = map.getNextWall(ghost1.ghostRow, ghost1.ghostColumn, 1);
+			finalPoint[0] = map.getNextWall(ghost1.ghostRow, ghost1.ghostColumn, 1);
 			break;
 
 		case GLUT_KEY_LEFT:
 //cout << "keyLEFT\n";
-			finalPoint[0] = map.getNextWall(ghost1.ghostRow, ghost1.ghostColumn, 2);
+			finalPoint[1] = map.getNextWall(ghost1.ghostRow, ghost1.ghostColumn, 2);
 			break;
 
 		case GLUT_KEY_RIGHT:
 //cout << "keyRIGHT\n";
-			finalPoint[0] = map.getNextWall(ghost1.ghostRow, ghost1.ghostColumn, 3);
+			finalPoint[1] = map.getNextWall(ghost1.ghostRow, ghost1.ghostColumn, 3);
 			break;
 
 		default:
 			return;
 	}
+
+//cout << "(" << finalPoint[0] << ", " << finalPoint[1] <<")\n";
 
 	ghost1.ghostDestinationRow = finalPoint[0];
 	ghost1.ghostDestinationColumn = finalPoint[1];

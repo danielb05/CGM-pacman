@@ -19,14 +19,16 @@ Ghost::Ghost(){
 void Ghost::setPosition(int ghostRow, int ghostColumn){
 	this->ghostRow = ghostRow;
 	this->ghostColumn = ghostColumn;
+	displayHeight = ghostRow * 20;
+	displayWidth = ghostColumn * 20;
 }
 
 void Ghost::startWalk(){
 
 	setVectorPoints();
-
-	velocityColumn = (destinationWidth - displayWidth) / GHOST_VELOCITY;
+	
 	velocityRow = (destinationHeight - displayHeight) / GHOST_VELOCITY;
+	velocityColumn = (destinationWidth - displayWidth) / GHOST_VELOCITY;
 
 	isMoving = true;
 	remainingTime = GHOST_VELOCITY;
@@ -40,13 +42,15 @@ void Ghost::refreshWalk(long elapsedTime){
 			displayHeight += velocityRow * elapsedTime;
 			displayWidth += velocityColumn * elapsedTime;
 			remainingTime -= elapsedTime;
-std::cout << "Width: " << displayWidth << " Height: " << displayHeight << "\n";
+//std::cout << "Width: " << displayWidth << " Height: " << displayHeight << "\n";
 		} else if(elapsedTime >= remainingTime) {
 		
 			displayHeight += velocityRow * remainingTime;
 			displayWidth += velocityColumn * remainingTime;
+			ghostRow = ghostDestinationRow;
+			ghostColumn = ghostDestinationColumn;
 			isMoving = false;
-std::cout << "Width: " << displayWidth << " Height: " << displayHeight << "\n";
+//std::cout << "Width: " << displayWidth << " Height: " << displayHeight << "\n";
 		}
 }
 

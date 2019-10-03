@@ -357,7 +357,7 @@ int Map::getNextWall(int x, int y, int direction){
 
 		//West
 		case 2:
-			for(int j = y; j < 0; j--)
+			for(int j = y; j >= 0; j--)
 				if(mapSurface2[x][j] == INNERWALL || mapSurface2[x][j] == FIXEDWALL)
 					return j + 1;
 			break;
