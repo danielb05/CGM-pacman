@@ -10,8 +10,7 @@ Rafael Câmara Pereira
 
 #pragma once
 
-#include <cmath>
-#include <cstdlib>
+#include "constants.h"
 #include "next_direction.h"
 #include "map.h"
 

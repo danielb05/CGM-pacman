@@ -10,11 +10,7 @@ Rafael Câmara Pereira
 
 #pragma once
 
-#include <cmath>
-#include <cstdlib>
-
-//Time constant in millisseconds for the ghost to pass between cells
-#define GHOST_VELOCITY 150
+#include "constants.h"
 
 class Ghost
 {
