@@ -1,5 +1,3 @@
-#pragma once
-
 /*
 03/10/2019
 Universitat de Lleida
@@ -9,6 +7,8 @@ Students:
 Daniel Vieira Cordeiro
 Rafael Câmara Pereira
 */
+
+#pragma once
 
 #include <cmath>
 #include <cstdlib>

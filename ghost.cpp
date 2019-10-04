@@ -73,17 +73,18 @@ void Ghost::setVectorPoints() {
 	destinationHeight = ghostDestinationRow * 20;
 	destinationWidth = ghostDestinationColumn * 20;
 
+	pathDistance = 0;
+	
 	if (ghostDestinationRow > ghostRow)
 		pathDistance = (ghostDestinationRow - ghostRow);
-	else if(ghostDestinationRow == ghostRow)
-		pathDistance = 1;
-	else
+	else if(ghostDestinationRow < ghostRow)
 		pathDistance = (ghostRow - ghostDestinationRow);
 
 	if (ghostDestinationColumn > ghostColumn)
 		pathDistance += (ghostDestinationColumn - ghostColumn);
-	else if (ghostDestinationColumn > ghostColumn)
-		pathDistance = 1;
-	else
+	else if (ghostDestinationColumn < ghostColumn)
 		pathDistance += (ghostColumn - ghostDestinationColumn);
+	
+	if(pathDistance == 0)
+		pathDistance++;
 }
