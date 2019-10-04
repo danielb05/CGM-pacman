@@ -10,8 +10,8 @@ Daniel Vieira Cordeiro
 Rafael Câmara Pereira
 */
 
-//#include <GL/freeglut.h>
-#include <GL/glut.h>
+#include <GL/freeglut.h>
+//#include <GL/glut.h>
 #include <iostream>
 #include <string>
 #include <ctime>
