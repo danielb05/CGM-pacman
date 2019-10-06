@@ -1,10 +1,10 @@
 #pragma once
 
 /*
-03/10/2019
+10/10/2019
 Universitat de Lleida
 Computer Graphics and Multimedia
-Task 2 - Pacman food and characters implementation
+Task 3 - Pacman 3D graphics and texture implementation
 Students:
 Daniel Vieira Cordeiro
 Rafael Câmara Pereira

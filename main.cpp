@@ -1,10 +1,10 @@
 //#include "stdafx.h"
 
 /*
-03/10/2019
+10/10/2019
 Universitat de Lleida
 Computer Graphics and Multimedia
-Task 2 - Pacman food and characters implementation
+Task 3 - Pacman 3D graphics and texture implementation
 Students:
 Daniel Vieira Cordeiro
 Rafael Câmara Pereira
@@ -115,7 +115,14 @@ void display() {
 
 	int x = map.ROWS - 1;
 	int y = map.COLUMNS2 - 1;
-glTranslatef(-(HEIGHT/2.0), 0, -(WIDTH/2.0));
+	
+	glTranslatef(-(HEIGHT/2.0), 0, -(WIDTH/2.0));
+	
+	GLUquadric *quad;
+	quad = gluNewQuadric();
+	
+	gluQuadricDrawStyle(quad, GLU_SILHOUETTE);
+	
 	for (int i = 0; i < map.ROWS; i++) {
 		for (int j = 0; j < map.COLUMNS2; j++) {
 			if (map.mapSurface2[i][j] == FIXEDWALL || map.mapSurface2[i][j] == INNERWALL) {
@@ -123,17 +130,57 @@ glTranslatef(-(HEIGHT/2.0), 0, -(WIDTH/2.0));
 				// Walls color
 				glColor3f(0.25, 0.25, 1.0);
 
-				glBegin(GL_QUADS);
+				// Upper
+				glBegin(GL_POLYGON);
+				
+				glVertex3i(j * HEIGHT / map.ROWS, 15,  i * WIDTH / map.COLUMNS2); //1
+				glVertex3i(j * HEIGHT / map.ROWS, 15, (i + 1) * WIDTH / map.COLUMNS2); //2
+				glVertex3i((j + 1) * HEIGHT / map.ROWS, 15, (i + 1) * WIDTH / map.COLUMNS2); //3
+				glVertex3i((j + 1) * HEIGHT / map.ROWS, 15, i * WIDTH / map.COLUMNS2); //4
 
-				// Sets the poligon vertices
-				/*
-				4 3
-				1 2
-				*/
+				glEnd();
+				
+				glColor3f(1.00, 0.25, 0.25);
+				// Front
+				glBegin(GL_POLYGON);
+				
+				glVertex3i((j + 1) * HEIGHT / map.ROWS, 0, (i + 1) * WIDTH / map.COLUMNS2); //4
+				glVertex3i((j + 1) * HEIGHT / map.ROWS, 15, (i + 1) * WIDTH / map.COLUMNS2); //3
+				glVertex3i(j * HEIGHT / map.ROWS, 15, (i + 1) * WIDTH / map.COLUMNS2); //2
+				glVertex3i(j * HEIGHT / map.ROWS, 0,  (i + 1) * WIDTH / map.COLUMNS2); //1
+				
+				glEnd();
+				
+				glColor3f(0.25, 1.00, 0.25);
+				// Back
+				glBegin(GL_POLYGON);
+				
+				glVertex3i(j * HEIGHT / map.ROWS, 0,  i * WIDTH / map.COLUMNS2); //1
+				glVertex3i(j * HEIGHT / map.ROWS, 15, i * WIDTH / map.COLUMNS2); //2
+				glVertex3i((j + 1) * HEIGHT / map.ROWS, 15, i * WIDTH / map.COLUMNS2); //3
+				glVertex3i((j + 1) * HEIGHT / map.ROWS, 0, i * WIDTH / map.COLUMNS2); //4
+
+				glEnd();
+				
+				glColor3f(0.6, 0.6, 0.25);
+				// Right
+				glBegin(GL_POLYGON);
+				
+				glVertex3i((j + 1) * HEIGHT / map.ROWS, 15, (i + 1) * WIDTH / map.COLUMNS2); //3
+				glVertex3i((j + 1) * HEIGHT / map.ROWS, 0, (i + 1) * WIDTH / map.COLUMNS2); //2
+				glVertex3i((j + 1) * HEIGHT / map.ROWS, 0,  i * WIDTH / map.COLUMNS2); //1
+				glVertex3i((j + 1) * HEIGHT / map.ROWS, 15, i * WIDTH / map.COLUMNS2); //4
+
+				glEnd();
+				
+				glColor3f(0.6, 0.25, 0.6);
+				// Left
+				glBegin(GL_POLYGON);
+				
 				glVertex3i(j * HEIGHT / map.ROWS, 0,  i * WIDTH / map.COLUMNS2); //1
 				glVertex3i(j * HEIGHT / map.ROWS, 0, (i + 1) * WIDTH / map.COLUMNS2); //2
-				glVertex3i((j + 1) * HEIGHT / map.ROWS, 0, (i + 1) * WIDTH / map.COLUMNS2); //3
-				glVertex3i((j + 1) * HEIGHT / map.ROWS, 0, i * WIDTH / map.COLUMNS2); //4
+				glVertex3i(j * HEIGHT / map.ROWS, 15, (i + 1) * WIDTH / map.COLUMNS2); //3
+				glVertex3i(j * HEIGHT / map.ROWS, 15, i * WIDTH / map.COLUMNS2); //4
 
 				glEnd();
 			}
@@ -142,27 +189,25 @@ glTranslatef(-(HEIGHT/2.0), 0, -(WIDTH/2.0));
 
 				// Food color
 				glColor3f(0.35, 0.8, 1.0);
-				glBegin(GL_QUADS);
-
-				glVertex3i((j * HEIGHT / map.ROWS) + FOODHEIGHT, 0, (i * WIDTH / map.COLUMNS2) + FOODWIDTH); //1
-				glVertex3i((j * HEIGHT / map.ROWS) + FOODHEIGHT, 0, ((i + 1) * WIDTH / map.COLUMNS2) - FOODWIDTH); //2
-				glVertex3i(((j + 1) * HEIGHT / map.ROWS) - FOODHEIGHT, 0,  ((i + 1) * WIDTH / map.COLUMNS2) - FOODWIDTH); //3
-				glVertex3i(((j + 1) * HEIGHT / map.ROWS) - FOODHEIGHT, 0, (i * WIDTH / map.COLUMNS2) + FOODWIDTH); //4
+				
+				glPushMatrix(); //remember current matrix
+				glTranslatef((j * HEIGHT / map.ROWS) + (BLOCKWIDTH/2), 10, (i * WIDTH / map.COLUMNS2) + (BLOCKWIDTH/2));
+				glBegin(GL_POLYGON);		
+				
+				gluSphere(quad,3,40,20);
 
 				glEnd();
+				glPopMatrix(); //restore matrix
 			}
+
 			if (map.mapSurface2[i][j] == PACMAN) {
 
 				// Pacman color
 				glColor3f(1.0, 1.0, 0.0);
 				
-				
-				GLUquadric *quad;
-				quad = gluNewQuadric();
-
 				glPushMatrix(); //remember current matrix
-				glTranslatef(pacman.displayWidth + (BLOCKWIDTH/2), 0, pacman.displayHeight + (BLOCKWIDTH/2));
-				glBegin(GL_QUADS);		
+				glTranslatef(pacman.displayWidth + (BLOCKWIDTH/2), 10, pacman.displayHeight + (BLOCKWIDTH/2));
+				glBegin(GL_POLYGON);		
 				
 				gluSphere(quad,5,50,20);
 
@@ -174,14 +219,15 @@ glTranslatef(-(HEIGHT/2.0), 0, -(WIDTH/2.0));
 
 				// Ghost color
 				glColor3f(0.86, 0.86, 0.86);
-				glBegin(GL_QUADS);
-
-				glVertex3i(ghost1.displayWidth + CHARACTERHEIGHT, 0, ghost1.displayHeight + CHARACTERWIDTH); //1
-				glVertex3i(ghost1.displayWidth + CHARACTERHEIGHT, 0, ghost1.displayHeight + BLOCKHEIGHT - CHARACTERWIDTH); //2
-				glVertex3i(ghost1.displayWidth + BLOCKWIDTH - CHARACTERHEIGHT, 0, ghost1.displayHeight + BLOCKHEIGHT - CHARACTERWIDTH); //3
-				glVertex3i(ghost1.displayWidth + BLOCKWIDTH - CHARACTERHEIGHT, 0, ghost1.displayHeight + CHARACTERWIDTH); //4
+				
+				glPushMatrix(); //remember current matrix
+				glTranslatef(ghost1.displayWidth + (BLOCKWIDTH/2), 10, ghost1.displayHeight + (BLOCKWIDTH/2));
+				glBegin(GL_POLYGON);		
+				
+				gluSphere(quad,5,50,20);
 
 				glEnd();
+				glPopMatrix(); //restore matrix
 			}
 		}
 	}
