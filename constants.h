@@ -7,16 +7,18 @@ Computer Graphics and Multimedia
 Task 3 - Pacman 3D graphics and texture implementation
 Students:
 Daniel Vieira Cordeiro
-Rafael Câmara Pereira
+Rafael CÃ¢mara Pereira
 */
 
-#include <GL/freeglut.h>
-//#include <GL/glut.h>
+//#include <GL/freeglut.h>
+#include <GL/glut.h>
 #include <iostream>
 #include <string>
 #include <ctime>
 #include <cmath>
 #include <cstdlib>
+
+//#include "/Users/Daniel/Documents/UDL/1 semester/Computer Graphics and Multimedia - 103085/aula 3/jpeg-6b/jpeglib.h"
 
 #define PI 3.1416
 
@@ -54,5 +56,11 @@ In the case of characters the size considered will be:
 #define EMPTYSPACE ' '
 #define GHOST 'G'
 
-//Time constant in millisseconds for the ghost to pass between cells
+// Time constant in millisseconds for the ghost to pass between cells
 #define GHOST_VELOCITY 150
+
+// Colors of the Objects
+#define WALL_COLOR 0.25, 0.25, 1.0
+#define FOOD_COLOR 0.35, 0.8, 1.0
+#define PACMAN_COLOR 1.0, 1.0, 0.0
+#define GHOST_COLOR 0.86, 0.86, 0.86
