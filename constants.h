@@ -17,8 +17,12 @@ Rafael Câmara Pereira
 #include <ctime>
 #include <cmath>
 #include <cstdlib>
+#include <stdio.h>
+#include <stdlib.h>
+#include "jpeglib.h"
+// #include "libjpeg.h"
 
-//#include "/Users/Daniel/Documents/UDL/1 semester/Computer Graphics and Multimedia - 103085/aula 3/jpeg-6b/jpeglib.h"
+//#include "/home/daniel/jpeg-6b/jpeglib.h"
 
 #define PI 3.1416
 
