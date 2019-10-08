@@ -21,7 +21,7 @@ using namespace std;
 
 /*--- Global variables that determine the viewpoint location ---*/
 int anglealpha = 0;
-int anglebeta = 0;
+int anglebeta = 50;
 
 //-----------------------------------------------
 
@@ -161,64 +161,86 @@ void display() {
 
 void drawWall(int i, int j)
 {
-	// Walls color
-	//glColor3f(WALL_COLOR);
+	glEnable(GL_TEXTURE_2D);
 
 	glBindTexture(GL_TEXTURE_2D,0);
 	
 	// Upper
 	glBegin(GL_POLYGON);
 
-	glTexCoord2f(-4.0,0.0); glVertex3i(j * HEIGHT / map.ROWS, 15, i * WIDTH / map.COLUMNS2); //1
-	glTexCoord2f(4.0,0.0); glVertex3i(j * HEIGHT / map.ROWS, 15, (i + 1) * WIDTH / map.COLUMNS2); //2
-	glTexCoord2f(4.0,4.0); glVertex3i((j + 1) * HEIGHT / map.ROWS, 15, (i + 1) * WIDTH / map.COLUMNS2); //3
-	glTexCoord2f(-4.0,4.0); glVertex3i((j + 1) * HEIGHT / map.ROWS, 15, i * WIDTH / map.COLUMNS2); //4
+	glTexCoord2f(-1.0,0.0);
+	glVertex3i(j * HEIGHT / map.ROWS, 15, i * WIDTH / map.COLUMNS2); //1
+	glTexCoord2f(-1.0,1.0);
+	glVertex3i(j * HEIGHT / map.ROWS, 15, (i + 1) * WIDTH / map.COLUMNS2); //2
+	glTexCoord2f(1.0,1.0);
+	glVertex3i((j + 1) * HEIGHT / map.ROWS, 15, (i + 1) * WIDTH / map.COLUMNS2); //3
+	glTexCoord2f(1.0,0.0);
+	glVertex3i((j + 1) * HEIGHT / map.ROWS, 15, i * WIDTH / map.COLUMNS2); //4
 
 	glEnd();
+	glDisable(GL_TEXTURE_2D);
 
-	//glColor3f(1.00, 0.25, 0.25);
+
+	// Walls color
+	glColor3f(WALL_COLOR);
+
 	// Front
 	glBegin(GL_POLYGON);
 
-	glTexCoord2f(-4.0,0.0); glVertex3i((j + 1) * HEIGHT / map.ROWS, 0, (i + 1) * WIDTH / map.COLUMNS2); //4
-	glTexCoord2f(4.0,0.0); glVertex3i((j + 1) * HEIGHT / map.ROWS, 15, (i + 1) * WIDTH / map.COLUMNS2); //3
-	glTexCoord2f(4.0,4.0); glVertex3i(j * HEIGHT / map.ROWS, 15, (i + 1) * WIDTH / map.COLUMNS2); //2
-	glTexCoord2f(-4.0,4.0); glVertex3i(j * HEIGHT / map.ROWS, 0, (i + 1) * WIDTH / map.COLUMNS2); //1
+	//glTexCoord2f(-1.0,0.0); 
+	glVertex3i((j + 1) * HEIGHT / map.ROWS, 0, (i + 1) * WIDTH / map.COLUMNS2); //4
+	//glTexCoord2f(1.0,0.0);
+	glVertex3i((j + 1) * HEIGHT / map.ROWS, 15, (i + 1) * WIDTH / map.COLUMNS2); //3
+	//glTexCoord2f(1.0,1.0);
+	glVertex3i(j * HEIGHT / map.ROWS, 15, (i + 1) * WIDTH / map.COLUMNS2); //2
+	//glTexCoord2f(-1.0,1.0);
+	glVertex3i(j * HEIGHT / map.ROWS, 0, (i + 1) * WIDTH / map.COLUMNS2); //1
 
 	glEnd();
 
-	//glColor3f(0.25, 1.00, 0.25);
+
 	// Back
 	glBegin(GL_POLYGON);
 
-	glTexCoord2f(-4.0,0.0); glVertex3i(j * HEIGHT / map.ROWS, 0, i * WIDTH / map.COLUMNS2); //1
-	glTexCoord2f(4.0,0.0); glVertex3i(j * HEIGHT / map.ROWS, 15, i * WIDTH / map.COLUMNS2); //2
-	glTexCoord2f(4.0,4.0); glVertex3i((j + 1) * HEIGHT / map.ROWS, 15, i * WIDTH / map.COLUMNS2); //3
-	glTexCoord2f(-4.0,4.0); glVertex3i((j + 1) * HEIGHT / map.ROWS, 0, i * WIDTH / map.COLUMNS2); //4
+	//glTexCoord2f(-1.0,0.0);
+	glVertex3i(j * HEIGHT / map.ROWS, 0, i * WIDTH / map.COLUMNS2); //1
+	//glTexCoord2f(1.0,0.0);
+	glVertex3i(j * HEIGHT / map.ROWS, 15, i * WIDTH / map.COLUMNS2); //2
+	//glTexCoord2f(1.0,1.0);
+	glVertex3i((j + 1) * HEIGHT / map.ROWS, 15, i * WIDTH / map.COLUMNS2); //3
+	//glTexCoord2f(-1.0,1.0);
+	glVertex3i((j + 1) * HEIGHT / map.ROWS, 0, i * WIDTH / map.COLUMNS2); //4
 
 	glEnd();
 
-	//glColor3f(0.6, 0.6, 0.25);
 	// Right
 	glBegin(GL_POLYGON);
 
-	glTexCoord2f(-4.0,0.0); glVertex3i((j + 1) * HEIGHT / map.ROWS, 15, (i + 1) * WIDTH / map.COLUMNS2); //3
-	glTexCoord2f(4.0,0.0); glVertex3i((j + 1) * HEIGHT / map.ROWS, 0, (i + 1) * WIDTH / map.COLUMNS2); //2
-	glTexCoord2f(4.0,4.0); glVertex3i((j + 1) * HEIGHT / map.ROWS, 0, i * WIDTH / map.COLUMNS2); //1
-	glTexCoord2f(-4.0,4.0); glVertex3i((j + 1) * HEIGHT / map.ROWS, 15, i * WIDTH / map.COLUMNS2); //4
+	//glTexCoord2f(-1.0,0.0);
+	glVertex3i((j + 1) * HEIGHT / map.ROWS, 15, (i + 1) * WIDTH / map.COLUMNS2); //3
+	//glTexCoord2f(1.0,0.0);
+	glVertex3i((j + 1) * HEIGHT / map.ROWS, 0, (i + 1) * WIDTH / map.COLUMNS2); //2
+	//glTexCoord2f(1.0,1.0);
+	glVertex3i((j + 1) * HEIGHT / map.ROWS, 0, i * WIDTH / map.COLUMNS2); //1
+	//glTexCoord2f(-1.0,1.0);
+	glVertex3i((j + 1) * HEIGHT / map.ROWS, 15, i * WIDTH / map.COLUMNS2); //4
 
 	glEnd();
 
-	//glColor3f(0.6, 0.25, 0.6);
 	// Left
 	glBegin(GL_POLYGON);
 
-	glTexCoord2f(-4.0,0.0); glVertex3i(j * HEIGHT / map.ROWS, 0, i * WIDTH / map.COLUMNS2); //1
-	glTexCoord2f(4.0,0.0); glVertex3i(j * HEIGHT / map.ROWS, 0, (i + 1) * WIDTH / map.COLUMNS2); //2
-	glTexCoord2f(4.0,4.0); glVertex3i(j * HEIGHT / map.ROWS, 15, (i + 1) * WIDTH / map.COLUMNS2); //3
-	glTexCoord2f(-4.0,4.0); glVertex3i(j * HEIGHT / map.ROWS, 15, i * WIDTH / map.COLUMNS2); //4
+	//glTexCoord2f(-1.0,0.0);
+	glVertex3i(j * HEIGHT / map.ROWS, 0, i * WIDTH / map.COLUMNS2); //1
+	//glTexCoord2f(1.0,0.0);
+	glVertex3i(j * HEIGHT / map.ROWS, 0, (i + 1) * WIDTH / map.COLUMNS2); //2
+	//glTexCoord2f(1.0,1.0);
+	glVertex3i(j * HEIGHT / map.ROWS, 15, (i + 1) * WIDTH / map.COLUMNS2); //3
+	//glTexCoord2f(-1.0,1.0);
+	glVertex3i(j * HEIGHT / map.ROWS, 15, i * WIDTH / map.COLUMNS2); //4
 
 	glEnd();
+
 }
 
 void drawFood(GLUquadric *quad, int i, int j)
@@ -279,6 +301,7 @@ void cameraControl(unsigned char c, int x, int y)
 	else if (c == 'l')
 		anglealpha = (anglealpha - 3 + 360) % 360;
 
+	//cout << "Beta: " << anglebeta << ", Alpha: " << anglealpha <<"\n";
 	glutPostRedisplay();
 }
 
@@ -380,6 +403,7 @@ void initiateOpenGl(int argc, char *argv[]) {
 	glutInitWindowSize(WIDTH, HEIGHT);
 	glutCreateWindow("Pacman maze");
 	glEnable(GL_DEPTH_TEST);
+	glEnable(GL_TEXTURE_2D);
 
 	glutDisplayFunc(display);
 	glutSpecialFunc(keyboard);
@@ -391,7 +415,7 @@ void initiateOpenGl(int argc, char *argv[]) {
 
 	glBindTexture(GL_TEXTURE_2D, 0);
 
-	LoadTexture("pared.jpg",64);
+	LoadTexture("images/rock2.jpg",64);
 
 	glutMainLoop();
 }
