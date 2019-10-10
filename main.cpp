@@ -168,9 +168,9 @@ void drawWall(int i, int j)
 	// Upper
 	glBegin(GL_POLYGON);
 
-	glTexCoord2f(-1.0,0.0);
+	glTexCoord2f(0.0,0.0);
 	glVertex3i(j * HEIGHT / map.ROWS, 15, i * WIDTH / map.COLUMNS2); //1
-	glTexCoord2f(-1.0,1.0);
+	glTexCoord2f(0.0,1.0);
 	glVertex3i(j * HEIGHT / map.ROWS, 15, (i + 1) * WIDTH / map.COLUMNS2); //2
 	glTexCoord2f(1.0,1.0);
 	glVertex3i((j + 1) * HEIGHT / map.ROWS, 15, (i + 1) * WIDTH / map.COLUMNS2); //3
@@ -187,13 +187,13 @@ void drawWall(int i, int j)
 	// Front
 	glBegin(GL_POLYGON);
 
-	//glTexCoord2f(-1.0,0.0); 
+	//glTexCoord2f(-4.0,0.0); 
 	glVertex3i((j + 1) * HEIGHT / map.ROWS, 0, (i + 1) * WIDTH / map.COLUMNS2); //4
-	//glTexCoord2f(1.0,0.0);
+	//glTexCoord2f(4.0,0.0);
 	glVertex3i((j + 1) * HEIGHT / map.ROWS, 15, (i + 1) * WIDTH / map.COLUMNS2); //3
-	//glTexCoord2f(1.0,1.0);
+	//glTexCoord2f(4.0,4.0);
 	glVertex3i(j * HEIGHT / map.ROWS, 15, (i + 1) * WIDTH / map.COLUMNS2); //2
-	//glTexCoord2f(-1.0,1.0);
+	//glTexCoord2f(-4.0,4.0);
 	glVertex3i(j * HEIGHT / map.ROWS, 0, (i + 1) * WIDTH / map.COLUMNS2); //1
 
 	glEnd();
@@ -202,13 +202,13 @@ void drawWall(int i, int j)
 	// Back
 	glBegin(GL_POLYGON);
 
-	//glTexCoord2f(-1.0,0.0);
+	//glTexCoord2f(-4.0,0.0);
 	glVertex3i(j * HEIGHT / map.ROWS, 0, i * WIDTH / map.COLUMNS2); //1
-	//glTexCoord2f(1.0,0.0);
+	//glTexCoord2f(4.0,0.0);
 	glVertex3i(j * HEIGHT / map.ROWS, 15, i * WIDTH / map.COLUMNS2); //2
-	//glTexCoord2f(1.0,1.0);
+	//glTexCoord2f(4.0,4.0);
 	glVertex3i((j + 1) * HEIGHT / map.ROWS, 15, i * WIDTH / map.COLUMNS2); //3
-	//glTexCoord2f(-1.0,1.0);
+	//glTexCoord2f(-4.0,4.0);
 	glVertex3i((j + 1) * HEIGHT / map.ROWS, 0, i * WIDTH / map.COLUMNS2); //4
 
 	glEnd();
@@ -216,13 +216,13 @@ void drawWall(int i, int j)
 	// Right
 	glBegin(GL_POLYGON);
 
-	//glTexCoord2f(-1.0,0.0);
+	//glTexCoord2f(-4.0,0.0);
 	glVertex3i((j + 1) * HEIGHT / map.ROWS, 15, (i + 1) * WIDTH / map.COLUMNS2); //3
-	//glTexCoord2f(1.0,0.0);
+	//glTexCoord2f(4.0,0.0);
 	glVertex3i((j + 1) * HEIGHT / map.ROWS, 0, (i + 1) * WIDTH / map.COLUMNS2); //2
-	//glTexCoord2f(1.0,1.0);
+	//glTexCoord2f(4.0,4.0);
 	glVertex3i((j + 1) * HEIGHT / map.ROWS, 0, i * WIDTH / map.COLUMNS2); //1
-	//glTexCoord2f(-1.0,1.0);
+	//glTexCoord2f(-4.0,4.0);
 	glVertex3i((j + 1) * HEIGHT / map.ROWS, 15, i * WIDTH / map.COLUMNS2); //4
 
 	glEnd();
@@ -230,13 +230,13 @@ void drawWall(int i, int j)
 	// Left
 	glBegin(GL_POLYGON);
 
-	//glTexCoord2f(-1.0,0.0);
+	//glTexCoord2f(-4.0,0.0);
 	glVertex3i(j * HEIGHT / map.ROWS, 0, i * WIDTH / map.COLUMNS2); //1
-	//glTexCoord2f(1.0,0.0);
+	//glTexCoord2f(4.0,0.0);
 	glVertex3i(j * HEIGHT / map.ROWS, 0, (i + 1) * WIDTH / map.COLUMNS2); //2
-	//glTexCoord2f(1.0,1.0);
+	//glTexCoord2f(4.0,4.0);
 	glVertex3i(j * HEIGHT / map.ROWS, 15, (i + 1) * WIDTH / map.COLUMNS2); //3
-	//glTexCoord2f(-1.0,1.0);
+	//glTexCoord2f(-4.0,4.0);
 	glVertex3i(j * HEIGHT / map.ROWS, 15, i * WIDTH / map.COLUMNS2); //4
 
 	glEnd();
@@ -415,7 +415,7 @@ void initiateOpenGl(int argc, char *argv[]) {
 
 	glBindTexture(GL_TEXTURE_2D, 0);
 
-	LoadTexture("images/rock2.jpg",64);
+	LoadTexture("images/water.jpg",64);
 
 	glutMainLoop();
 }
