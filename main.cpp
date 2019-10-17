@@ -36,6 +36,7 @@ void drawWall(int i, int j);
 void drawFood(GLUquadric *quad, int i, int j);
 void drawPacman(GLUquadric *quad);
 void drawGhost(GLUquadric *quad);
+void drawFloor();
 
 void ReadJPEG(char *filename,unsigned char **image,int *width, int *height);
 void LoadTexture(char *filename,int dim);
@@ -155,6 +156,8 @@ void display() {
 			}
 		}
 	}
+
+	drawFloor();
 
 	glutSwapBuffers();
 }
@@ -286,6 +289,65 @@ void drawGhost(GLUquadric *quad)
 
 	glEnd();
 	glPopMatrix(); //restore matrix
+}
+
+void drawFloor()
+{
+	// 4 3
+	// 1 2
+
+	// Floor color
+	glColor3f(FLOOR_COLOR);
+
+	//  Upper
+	glBegin(GL_POLYGON);
+
+	glVertex3i(0, 0, 0); //1
+	glVertex3i(0, 0, WIDTH); //2
+	glVertex3i(HEIGHT, 0, WIDTH); //3
+	glVertex3i(HEIGHT, 0, 0); //4
+
+	glEnd();	
+
+	// Front
+	// glBegin(GL_POLYGON);
+	 
+	// glVertex3i(0, 0, 0); //1
+	// glVertex3i(0, 0, WIDTH); //2
+	// glVertex3i(0, -5, WIDTH); //3
+	// glVertex3i(0, -5, 0); //4
+
+	// glEnd();
+
+	// // Back
+	// glBegin(GL_POLYGON);
+	
+	// glVertex3i(0, -5, 0); //1
+	// glVertex3i(0, 0, WIDTH); //2
+	// glVertex3i(HEIGHT, 0, WIDTH); //3
+	// glVertex3i(HEIGHT, -5, 0); //4
+
+	// glEnd();
+
+	// Right
+	glBegin(GL_POLYGON);
+	
+	glVertex3i(HEIGHT, 0, 0); //1
+	glVertex3i(HEIGHT, 0, WIDTH); //2
+	glVertex3i(HEIGHT, -5, WIDTH); //3
+	glVertex3i(HEIGHT, -5, 0); //4
+
+	glEnd();
+
+	// // Left
+	// glBegin(GL_POLYGON);
+	
+	// glVertex3i(0, -5, 0); //1
+	// glVertex3i(0, -5, WIDTH); //2
+	// glVertex3i(HEIGHT, 0, WIDTH); //3
+	// glVertex3i(HEIGHT, 0, 0); //4
+
+	// glEnd();
 }
 
 void cameraControl(unsigned char c, int x, int y)
