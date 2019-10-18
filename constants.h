@@ -19,7 +19,7 @@ Rafael Câmara Pereira
 #include <cstdlib>
 #include <stdio.h>
 #include <stdlib.h>
-//#include "jpeglib.h"
+#include "jpeglib.h"
 // #include "libjpeg.h"
 
 //#include "/home/daniel/jpeg-6b/jpeglib.h"
@@ -45,6 +45,10 @@ In the case of characters the size considered will be:
 */
 #define CHARACTERHEIGHT 4
 #define CHARACTERWIDTH 4
+
+#define PACMAN_RADIUS 5
+#define GHOST_RADIUS 5
+#define FOOD_RADIUS 3
 
 // Define constants for poligon size and map constraints
 #define MAXROWS 50

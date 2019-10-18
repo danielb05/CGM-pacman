@@ -14,8 +14,7 @@ Rafael Câmara Pereira
 #include "map.h"
 #include "pacman.h"
 #include "ghost.h"
-
-//#include "/home/daniel/jpeg-6b/jpeglib.h"
+#include "texture.h"
 
 using namespace std;
 
@@ -37,6 +36,8 @@ void drawFood(GLUquadric *quad, int i, int j);
 void drawPacman(GLUquadric *quad);
 void drawGhost(GLUquadric *quad);
 void drawFloor();
+void addAmbientLight();
+void addSpotLight(char character);
 
 void ReadJPEG(char *filename,unsigned char **image,int *width, int *height);
 void LoadTexture(char *filename,int dim);
@@ -48,6 +49,7 @@ int HEIGHT;
 Map map;
 Ghost ghost1;
 Pacman pacman;
+Texture texture;
 long lastTime = 0;
 
 // Main function
@@ -103,8 +105,6 @@ void PositionObserver(float alpha, float beta, int radi)
 void display() {
 
 	int i, j;
-	GLint position[4];
-	GLfloat color[4];
   
 	// Path color
 	glClearColor(0.0, 0.0, 0.0, 0.0);
@@ -125,14 +125,7 @@ void display() {
 	glPolygonMode(GL_FRONT, GL_FILL);
 	glPolygonMode(GL_BACK, GL_LINE);
 
-	//-- Ambient light
-  
-	position[0]=0; position[1]=75; position[2]=0; position[3]=1;
-	glLightiv(GL_LIGHT0,GL_POSITION,position);
-  
-	color[0]=0.1; color[1]=0.1; color[2]=0.1; color[3]=1;
-	glLightfv(GL_LIGHT0,GL_AMBIENT,color);
-	glEnable(GL_LIGHT0);
+	addAmbientLight();
 
 	int x = map.ROWS - 1;
 	int y = map.COLUMNS2 - 1;
@@ -274,7 +267,7 @@ void drawFood(GLUquadric *quad, int i, int j)
 	glTranslatef((j * HEIGHT / map.ROWS) + (BLOCKWIDTH / 2), 10, (i * WIDTH / map.COLUMNS2) + (BLOCKWIDTH / 2));
 	glBegin(GL_POLYGON);
 
-	gluSphere(quad, 3, 40, 20);
+	gluSphere(quad, FOOD_RADIUS, 40, 20);
 
 	glEnd();
 	glPopMatrix(); //restore matrix
@@ -282,31 +275,16 @@ void drawFood(GLUquadric *quad, int i, int j)
 
 void drawPacman(GLUquadric *quad)
 {
-	GLint position[4];
-	GLfloat color[4];
 	// Pacman color
 	glColor3f(PACMAN_COLOR);
 
-	//-- Spot light
-
-	  position[0]=pacman.displayWidth + (BLOCKWIDTH / 2); position[1]=10; position[2]=pacman.displayHeight + (BLOCKWIDTH / 2); position[3]=1; 
-	  glLightiv(GL_LIGHT1,GL_POSITION,position);
-	  
-	  color[0]=0.3; color[1]=0.3; color[2]=0.3; color[3]=1;
-	  glLightfv(GL_LIGHT1,GL_DIFFUSE,color);
-
-	  glLightf(GL_LIGHT1,GL_CONSTANT_ATTENUATION,1.0);
-	  glLightf(GL_LIGHT1,GL_LINEAR_ATTENUATION,0.0);
-	  glLightf(GL_LIGHT1,GL_QUADRATIC_ATTENUATION,0.0);
-
-	glEnable(GL_LIGHT1);
-
+	addSpotLight(PACMAN);
 
 	glPushMatrix(); //remember current matrix
 	glTranslatef(pacman.displayWidth + (BLOCKWIDTH / 2), 10, pacman.displayHeight + (BLOCKWIDTH / 2));
 	glBegin(GL_POLYGON);
 
-	gluSphere(quad, 5, 50, 20);
+	gluSphere(quad, PACMAN_RADIUS, 50, 20);
 
 	glEnd();
 	glPopMatrix(); //restore matrix
@@ -317,11 +295,13 @@ void drawGhost(GLUquadric *quad)
 	// Ghost color
 	glColor3f(GHOST_COLOR);
 
+	addSpotLight(GHOST);
+
 	glPushMatrix(); //remember current matrix
 	glTranslatef(ghost1.displayWidth + (BLOCKWIDTH / 2), 10, ghost1.displayHeight + (BLOCKWIDTH / 2));
 	glBegin(GL_POLYGON);
 
-	gluSphere(quad, 5, 50, 20);
+	gluSphere(quad, GHOST_RADIUS, 50, 20);
 
 	glEnd();
 	glPopMatrix(); //restore matrix
@@ -343,6 +323,58 @@ void drawFloor()
 	glVertex3i(HEIGHT, 0, 0); //4
 
 	glEnd();
+}
+
+void addAmbientLight() {
+
+	GLint position[4] = {0,0,0,1};
+	GLfloat color[4] = {0.1,0.1,0.1,1};
+
+	//-- Ambient light
+
+	glLightiv(GL_LIGHT0,GL_POSITION,position);
+	glLightfv(GL_LIGHT0,GL_AMBIENT,color);
+
+	//glLightfv(GL_LIGHT0,GL_DIFFUSE,color);
+    //glLightfv(GL_LIGHT0,GL_SPECULAR,color);
+
+	glColorMaterial(GL_FRONT, GL_DIFFUSE);
+	glEnable(GL_COLOR_MATERIAL);
+
+	glEnable(GL_LIGHT0);
+
+
+}
+
+void addSpotLight(char character) {
+	
+	GLint position[4];
+	GLfloat color[4] = {0.3, 0.3, 0.3, 1};
+
+	if(character == PACMAN){ // PACMAN
+		
+		position[0] = pacman.displayWidth + (BLOCKWIDTH / 2);
+		position[1] = 10;
+		position[2] = pacman.displayHeight + (BLOCKWIDTH / 2) + PACMAN_RADIUS;
+		position[3] = 1;
+
+	}
+	else { // GHOST
+		position[0] = ghost1.displayWidth + (BLOCKWIDTH / 2);
+		position[1] = 10;
+		position[2] = ghost1.displayHeight + (BLOCKWIDTH / 2) + PACMAN_RADIUS;
+		position[3] = 1;
+	}
+	
+
+	glLightiv(GL_LIGHT1,GL_POSITION,position);
+	glLightfv(GL_LIGHT1,GL_DIFFUSE,color);
+
+	glLightf(GL_LIGHT1,GL_CONSTANT_ATTENUATION,1.0);
+	glLightf(GL_LIGHT1,GL_LINEAR_ATTENUATION,0.0);
+	glLightf(GL_LIGHT1,GL_QUADRATIC_ATTENUATION,0.0);
+
+	glEnable(GL_LIGHT1);
 }
 
 void cameraControl(unsigned char c, int x, int y)
@@ -471,95 +503,13 @@ void initiateOpenGl(int argc, char *argv[]) {
 	glMatrixMode(GL_PROJECTION);
 	gluOrtho2D(0, HEIGHT - 1, WIDTH - 1, 0);
 
-	//glBindTexture(GL_TEXTURE_2D, 0);
+	glBindTexture(GL_TEXTURE_2D, 0);
 
-	//LoadTexture("images/water.jpg",64);
+	texture.LoadTexture("images/water.jpg",64);
+
+	glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_COMBINE);    
+    
+    glTexEnvf(GL_TEXTURE_ENV, GL_COMBINE_RGB, GL_MODULATE);
 
 	glutMainLoop();
 }
-
-/*--------------------------------------------------------/
- Code for adding textures
-/--------------------------------------------------------*/
-/*void ReadJPEG(char *filename,unsigned char **image,int *width, int *height)
-{
-  struct jpeg_decompress_struct cinfo;
-  struct jpeg_error_mgr jerr;
-  FILE * infile;
-  unsigned char **buffer;
-  int i,j;
-
-  cinfo.err = jpeg_std_error(&jerr);
-  jpeg_create_decompress(&cinfo);
-
-
-  if ((infile = fopen(filename, "rb")) == NULL) {
-    printf("Unable to open file %s\n",filename);
-    exit(1);
-  }
-
-  jpeg_stdio_src(&cinfo, infile);
-  jpeg_read_header(&cinfo, TRUE);
-  jpeg_calc_output_dimensions(&cinfo);
-  jpeg_start_decompress(&cinfo);
-
-  *width = cinfo.output_width;
-  *height  = cinfo.output_height;
-
-
-  *image=(unsigned char*)malloc(cinfo.output_width*cinfo.output_height*cinfo.output_components);
-
-  buffer=(unsigned char **)malloc(1*sizeof(unsigned char **));
-  buffer[0]=(unsigned char *)malloc(cinfo.output_width*cinfo.output_components);
-
-
-  i=0;
-  while (cinfo.output_scanline < cinfo.output_height) {
-    jpeg_read_scanlines(&cinfo, buffer, 1);
-
-    for(j=0;j<cinfo.output_width*cinfo.output_components;j++)
-      {
-	(*image)[i]=buffer[0][j];
-	i++;
-      }   
-
-    }
-
-  free(buffer);
-  jpeg_finish_decompress(&cinfo);
-} 
-
-void LoadTexture(char *filename,int dim)
-{
-  unsigned char *buffer;
-  unsigned char *buffer2;
-  int width,height;
-  long i,j;
-  long k,h;
-
-  ReadJPEG(filename,&buffer,&width,&height);
-
-  buffer2=(unsigned char*)malloc(dim*dim*3);
-
-  //-- The texture pattern is subsampled so that its dimensions become dim x dim --
-  for(i=0;i<dim;i++)
-    for(j=0;j<dim;j++)
-      {
-	k=i*height/dim;
-	h=j*width/dim;
-	
-	buffer2[3*(i*dim+j)]=buffer[3*(k*width +h)];
-	buffer2[3*(i*dim+j)+1]=buffer[3*(k*width +h)+1];
-	buffer2[3*(i*dim+j)+2]=buffer[3*(k*width +h)+2];
-
-      }
-
-  glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_NEAREST);
-  glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_NEAREST);
-  glTexEnvi(GL_TEXTURE_ENV,GL_TEXTURE_ENV_MODE,GL_REPLACE);
-  glTexImage2D(GL_TEXTURE_2D,0,GL_RGB,dim,dim,0,GL_RGB,GL_UNSIGNED_BYTE,buffer2);
-
-  free(buffer);
-  free(buffer2);
-}
-*/
