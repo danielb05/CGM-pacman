@@ -103,7 +103,9 @@ void PositionObserver(float alpha, float beta, int radi)
 void display() {
 
 	int i, j;
-
+	GLint position[4];
+	GLfloat color[4];
+  
 	// Path color
 	glClearColor(0.0, 0.0, 0.0, 0.0);
 	
@@ -122,6 +124,15 @@ void display() {
 
 	glPolygonMode(GL_FRONT, GL_FILL);
 	glPolygonMode(GL_BACK, GL_LINE);
+
+	//-- Ambient light
+  
+	position[0]=0; position[1]=75; position[2]=0; position[3]=1;
+	glLightiv(GL_LIGHT0,GL_POSITION,position);
+  
+	color[0]=0.1; color[1]=0.1; color[2]=0.1; color[3]=1;
+	glLightfv(GL_LIGHT0,GL_AMBIENT,color);
+	glEnable(GL_LIGHT0);
 
 	int x = map.ROWS - 1;
 	int y = map.COLUMNS2 - 1;
@@ -164,13 +175,18 @@ void display() {
 
 void drawWall(int i, int j)
 {
+	GLfloat material[4];
+	material[0]=1.0; material[1]=1.0; material[2]=1.0; material[3]=1.0; 
+	glMaterialfv(GL_FRONT_AND_BACK,GL_AMBIENT_AND_DIFFUSE,material);
+  
 	glEnable(GL_TEXTURE_2D);
 
 	glBindTexture(GL_TEXTURE_2D,0);
 	
 	// Upper
 	glBegin(GL_POLYGON);
-
+	
+	glNormal3f(0,1,0);
 	glTexCoord2f(0.0,0.0);
 	glVertex3i(j * HEIGHT / map.ROWS, 15, i * WIDTH / map.COLUMNS2); //1
 	glTexCoord2f(0.0,1.0);
@@ -183,13 +199,13 @@ void drawWall(int i, int j)
 	glEnd();
 	glDisable(GL_TEXTURE_2D);
 
-
 	// Walls color
 	glColor3f(WALL_COLOR);
 
 	// Front
 	glBegin(GL_POLYGON);
 
+	glNormal3f(0,0,1);
 	//glTexCoord2f(-4.0,0.0); 
 	glVertex3i((j + 1) * HEIGHT / map.ROWS, 0, (i + 1) * WIDTH / map.COLUMNS2); //4
 	//glTexCoord2f(4.0,0.0);
@@ -205,6 +221,7 @@ void drawWall(int i, int j)
 	// Back
 	glBegin(GL_POLYGON);
 
+	glNormal3f(0,0,-1);
 	//glTexCoord2f(-4.0,0.0);
 	glVertex3i(j * HEIGHT / map.ROWS, 0, i * WIDTH / map.COLUMNS2); //1
 	//glTexCoord2f(4.0,0.0);
@@ -219,6 +236,7 @@ void drawWall(int i, int j)
 	// Right
 	glBegin(GL_POLYGON);
 
+	glNormal3f(1,0,0);
 	//glTexCoord2f(-4.0,0.0);
 	glVertex3i((j + 1) * HEIGHT / map.ROWS, 15, (i + 1) * WIDTH / map.COLUMNS2); //3
 	//glTexCoord2f(4.0,0.0);
@@ -233,6 +251,7 @@ void drawWall(int i, int j)
 	// Left
 	glBegin(GL_POLYGON);
 
+	glNormal3f(-1,0,0);
 	//glTexCoord2f(-4.0,0.0);
 	glVertex3i(j * HEIGHT / map.ROWS, 0, i * WIDTH / map.COLUMNS2); //1
 	//glTexCoord2f(4.0,0.0);
@@ -263,8 +282,25 @@ void drawFood(GLUquadric *quad, int i, int j)
 
 void drawPacman(GLUquadric *quad)
 {
+	GLint position[4];
+	GLfloat color[4];
 	// Pacman color
 	glColor3f(PACMAN_COLOR);
+
+	//-- Spot light
+
+	  position[0]=pacman.displayWidth + (BLOCKWIDTH / 2); position[1]=10; position[2]=pacman.displayHeight + (BLOCKWIDTH / 2); position[3]=1; 
+	  glLightiv(GL_LIGHT1,GL_POSITION,position);
+	  
+	  color[0]=0.3; color[1]=0.3; color[2]=0.3; color[3]=1;
+	  glLightfv(GL_LIGHT1,GL_DIFFUSE,color);
+
+	  glLightf(GL_LIGHT1,GL_CONSTANT_ATTENUATION,1.0);
+	  glLightf(GL_LIGHT1,GL_LINEAR_ATTENUATION,0.0);
+	  glLightf(GL_LIGHT1,GL_QUADRATIC_ATTENUATION,0.0);
+
+	glEnable(GL_LIGHT1);
+
 
 	glPushMatrix(); //remember current matrix
 	glTranslatef(pacman.displayWidth + (BLOCKWIDTH / 2), 10, pacman.displayHeight + (BLOCKWIDTH / 2));
@@ -293,61 +329,20 @@ void drawGhost(GLUquadric *quad)
 
 void drawFloor()
 {
-	// 4 3
-	// 1 2
 
 	// Floor color
 	glColor3f(FLOOR_COLOR);
 
 	//  Upper
 	glBegin(GL_POLYGON);
-
+	
+	glNormal3f(0,1,0);
 	glVertex3i(0, 0, 0); //1
 	glVertex3i(0, 0, WIDTH); //2
 	glVertex3i(HEIGHT, 0, WIDTH); //3
 	glVertex3i(HEIGHT, 0, 0); //4
 
-	glEnd();	
-
-	// Front
-	// glBegin(GL_POLYGON);
-	 
-	// glVertex3i(0, 0, 0); //1
-	// glVertex3i(0, 0, WIDTH); //2
-	// glVertex3i(0, -5, WIDTH); //3
-	// glVertex3i(0, -5, 0); //4
-
-	// glEnd();
-
-	// // Back
-	// glBegin(GL_POLYGON);
-	
-	// glVertex3i(0, -5, 0); //1
-	// glVertex3i(0, 0, WIDTH); //2
-	// glVertex3i(HEIGHT, 0, WIDTH); //3
-	// glVertex3i(HEIGHT, -5, 0); //4
-
-	// glEnd();
-
-	// Right
-	glBegin(GL_POLYGON);
-	
-	glVertex3i(HEIGHT, 0, 0); //1
-	glVertex3i(HEIGHT, 0, WIDTH); //2
-	glVertex3i(HEIGHT, -5, WIDTH); //3
-	glVertex3i(HEIGHT, -5, 0); //4
-
 	glEnd();
-
-	// // Left
-	// glBegin(GL_POLYGON);
-	
-	// glVertex3i(0, -5, 0); //1
-	// glVertex3i(0, -5, WIDTH); //2
-	// glVertex3i(HEIGHT, 0, WIDTH); //3
-	// glVertex3i(HEIGHT, 0, 0); //4
-
-	// glEnd();
 }
 
 void cameraControl(unsigned char c, int x, int y)
@@ -466,7 +461,8 @@ void initiateOpenGl(int argc, char *argv[]) {
 	glutCreateWindow("Pacman maze");
 	glEnable(GL_DEPTH_TEST);
 	glEnable(GL_TEXTURE_2D);
-
+	glEnable(GL_LIGHTING);
+	
 	glutDisplayFunc(display);
 	glutSpecialFunc(keyboard);
 	glutKeyboardFunc(cameraControl);
@@ -475,9 +471,9 @@ void initiateOpenGl(int argc, char *argv[]) {
 	glMatrixMode(GL_PROJECTION);
 	gluOrtho2D(0, HEIGHT - 1, WIDTH - 1, 0);
 
-	glBindTexture(GL_TEXTURE_2D, 0);
+	//glBindTexture(GL_TEXTURE_2D, 0);
 
-	LoadTexture("images/water.jpg",64);
+	//LoadTexture("images/water.jpg",64);
 
 	glutMainLoop();
 }
@@ -485,7 +481,7 @@ void initiateOpenGl(int argc, char *argv[]) {
 /*--------------------------------------------------------/
  Code for adding textures
 /--------------------------------------------------------*/
-void ReadJPEG(char *filename,unsigned char **image,int *width, int *height)
+/*void ReadJPEG(char *filename,unsigned char **image,int *width, int *height)
 {
   struct jpeg_decompress_struct cinfo;
   struct jpeg_error_mgr jerr;
@@ -566,3 +562,4 @@ void LoadTexture(char *filename,int dim)
   free(buffer);
   free(buffer2);
 }
+*/

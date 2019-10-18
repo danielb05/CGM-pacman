@@ -10,8 +10,8 @@ Daniel Vieira Cordeiro
 Rafael Câmara Pereira
 */
 
-//#include <GL/freeglut.h>
-#include <GL/glut.h>
+#include <GL/freeglut.h>
+//#include <GL/glut.h>
 #include <iostream>
 #include <string>
 #include <ctime>
@@ -19,7 +19,7 @@ Rafael Câmara Pereira
 #include <cstdlib>
 #include <stdio.h>
 #include <stdlib.h>
-#include "jpeglib.h"
+//#include "jpeglib.h"
 // #include "libjpeg.h"
 
 //#include "/home/daniel/jpeg-6b/jpeglib.h"
