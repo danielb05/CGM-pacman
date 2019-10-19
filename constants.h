@@ -73,3 +73,10 @@ In the case of characters the size considered will be:
 #define PACMAN_COLOR 1.0, 1.0, 0.0
 #define GHOST_COLOR 1.0, 1.0, 1.0
 #define FLOOR_COLOR 0.25, 0.25, 0.25
+
+
+// Movement Direction
+#define UP 0
+#define DOWN 1
+#define LEFT 2
+#define RIGHT 3

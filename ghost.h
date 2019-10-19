@@ -5,7 +5,7 @@ Computer Graphics and Multimedia
 Task 3 - Pacman 3D graphics and texture implementation
 Students:
 Daniel Vieira Cordeiro
-Rafael Câmara Pereira
+Rafael Cï¿½mara Pereira
 */
 
 #pragma once
@@ -35,6 +35,8 @@ public:
 	long remainingTime;
 
 	bool isMoving;
+
+	int lastDirection;
 
 public:
 

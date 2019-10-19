@@ -26,6 +26,7 @@ Ghost::Ghost() {
 	velocityRow = 0.0;
 	velocityColumn = 0.0;
 	remainingTime = 0.0;
+	lastDirection = 0;
 }
 
 void Ghost::setPosition(int ghostRow, int ghostColumn) {

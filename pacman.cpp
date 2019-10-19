@@ -29,6 +29,7 @@ Pacman::Pacman() {
 	velocityRow = 0.0;
 	velocityColumn = 0.0;
 	remainingTime = 0.0;
+	lastDirection = 0;
 }
 
 void Pacman::addMap(Map m) {

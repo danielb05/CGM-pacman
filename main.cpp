@@ -350,6 +350,7 @@ void addSpotLight(char character) {
 	
 	GLint position[4];
 	GLfloat color[4] = {0.3, 0.3, 0.3, 1};
+	GLfloat direction[4] = {0, 0, 0, 1};
 
 	if(character == PACMAN){ // PACMAN
 		
@@ -358,23 +359,42 @@ void addSpotLight(char character) {
 		position[2] = pacman.displayHeight + (BLOCKWIDTH / 2) + PACMAN_RADIUS;
 		position[3] = 1;
 
+    	if(pacman.lastDirection==UP)direction[2]=1;
+    	if(pacman.lastDirection==DOWN)direction[2]=-1;
+    	if(pacman.lastDirection==RIGHT)direction[1]=-1;
+    	if(pacman.lastDirection==LEFT)direction[1]=1;
+
+		glLightiv(GL_LIGHT1,GL_POSITION,position);
+		glLightfv(GL_LIGHT1,GL_DIFFUSE,color);
+		glLightf(GL_LIGHT1,GL_CONSTANT_ATTENUATION,1.0);
+		glLightf(GL_LIGHT1,GL_LINEAR_ATTENUATION,0.0);
+		glLightf(GL_LIGHT1,GL_QUADRATIC_ATTENUATION,0.0);
+		glLightfv(GL_LIGHT1,GL_SPOT_DIRECTION, direction);
+
+		glEnable(GL_LIGHT1);
+
 	}
 	else { // GHOST
+
 		position[0] = ghost1.displayWidth + (BLOCKWIDTH / 2);
 		position[1] = 10;
 		position[2] = ghost1.displayHeight + (BLOCKWIDTH / 2) + PACMAN_RADIUS;
 		position[3] = 1;
-	}
-	
 
-	glLightiv(GL_LIGHT1,GL_POSITION,position);
-	glLightfv(GL_LIGHT1,GL_DIFFUSE,color);
+		if(ghost1.lastDirection==UP)direction[2]=1;
+    	if(ghost1.lastDirection==DOWN)direction[2]=-1;
+    	if(ghost1.lastDirection==RIGHT)direction[1]=-1;
+    	if(ghost1.lastDirection==LEFT)direction[1]=1;
 
-	glLightf(GL_LIGHT1,GL_CONSTANT_ATTENUATION,1.0);
-	glLightf(GL_LIGHT1,GL_LINEAR_ATTENUATION,0.0);
-	glLightf(GL_LIGHT1,GL_QUADRATIC_ATTENUATION,0.0);
+		glLightiv(GL_LIGHT2,GL_POSITION,position);
+		glLightfv(GL_LIGHT2,GL_DIFFUSE,color);
+		glLightf(GL_LIGHT2,GL_CONSTANT_ATTENUATION,1.0);
+		glLightf(GL_LIGHT2,GL_LINEAR_ATTENUATION,0.0);
+		glLightf(GL_LIGHT2,GL_QUADRATIC_ATTENUATION,0.0);
+		glLightfv(GL_LIGHT2,GL_SPOT_DIRECTION, direction);
 
-	glEnable(GL_LIGHT1);
+		glEnable(GL_LIGHT2);
+	}	
 }
 
 void cameraControl(unsigned char c, int x, int y)
@@ -402,22 +422,26 @@ void keyboard(int key, int x, int y) {
 		switch (key) {
 		case GLUT_KEY_UP:
 			//cout << "keyUP\n";
-			finalPoint[0] = map.getNextWall(ghost1.ghostRow, ghost1.ghostColumn, 0);
+			finalPoint[0] = map.getNextWall(ghost1.ghostRow, ghost1.ghostColumn, UP);
+			ghost1.lastDirection = UP;
 			break;
 
 		case GLUT_KEY_DOWN:
 			//cout << "keyDOWN\n";
-			finalPoint[0] = map.getNextWall(ghost1.ghostRow, ghost1.ghostColumn, 1);
+			finalPoint[0] = map.getNextWall(ghost1.ghostRow, ghost1.ghostColumn, DOWN);
+			ghost1.lastDirection = DOWN;
 			break;
 
 		case GLUT_KEY_LEFT:
 			//cout << "keyLEFT\n";
-			finalPoint[1] = map.getNextWall(ghost1.ghostRow, ghost1.ghostColumn, 2);
+			finalPoint[1] = map.getNextWall(ghost1.ghostRow, ghost1.ghostColumn, LEFT);
+			ghost1.lastDirection = LEFT;
 			break;
 
 		case GLUT_KEY_RIGHT:
 			//cout << "keyRIGHT\n";
-			finalPoint[1] = map.getNextWall(ghost1.ghostRow, ghost1.ghostColumn, 3);
+			finalPoint[1] = map.getNextWall(ghost1.ghostRow, ghost1.ghostColumn, RIGHT);
+			ghost1.lastDirection = RIGHT;
 			break;
 
 		default:
