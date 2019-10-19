@@ -1,4 +1,4 @@
-//#include "stdafx.h"
+#include "stdafx.h"
 
 /*
 10/10/2019
@@ -348,21 +348,39 @@ void addAmbientLight() {
 
 void addSpotLight(char character) {
 	
-	GLint position[4];
-	GLfloat color[4] = {0.3, 0.3, 0.3, 1};
-	GLfloat direction[4] = {0, 0, 0, 1};
+	GLint position[] = {0, 10, 0, 1};;
+	GLfloat color[] = {0.3, 0.3, 0.3, 1};
+	GLfloat direction[] = {0.0, 10.0, 0.0};
 
 	if(character == PACMAN){ // PACMAN
 		
-		position[0] = pacman.displayWidth + (BLOCKWIDTH / 2);
-		position[1] = 10;
-		position[2] = pacman.displayHeight + (BLOCKWIDTH / 2) + PACMAN_RADIUS;
-		position[3] = 1;
-
-    	if(pacman.lastDirection==UP)direction[2]=1;
-    	if(pacman.lastDirection==DOWN)direction[2]=-1;
-    	if(pacman.lastDirection==RIGHT)direction[1]=-1;
-    	if(pacman.lastDirection==LEFT)direction[1]=1;
+    	if(pacman.lastDirection==UP){
+			
+			position[0] = pacman.displayWidth + (BLOCKWIDTH / 2);
+			position[2] = pacman.displayHeight + (BLOCKWIDTH / 2) - PACMAN_RADIUS;
+			direction[2] = 1.0;
+		}
+		
+    	if(pacman.lastDirection==DOWN){
+			
+			position[0] = pacman.displayWidth + (BLOCKWIDTH / 2);
+			position[2] = pacman.displayHeight + (BLOCKWIDTH / 2) + PACMAN_RADIUS;
+			direction[2] = -1.0;
+		}
+		
+    	if(pacman.lastDirection==RIGHT){
+			
+			position[0] = pacman.displayWidth + (BLOCKWIDTH / 2) + PACMAN_RADIUS;
+			position[2] = pacman.displayHeight + (BLOCKWIDTH / 2);
+			direction[0] = -1.0;
+		}
+    	
+		if(pacman.lastDirection==LEFT){
+			
+			position[0] = pacman.displayWidth + (BLOCKWIDTH / 2) - PACMAN_RADIUS;
+			position[2] = pacman.displayHeight + (BLOCKWIDTH / 2);
+			direction[0] = 1.0;
+		}
 
 		glLightiv(GL_LIGHT1,GL_POSITION,position);
 		glLightfv(GL_LIGHT1,GL_DIFFUSE,color);
@@ -376,15 +394,33 @@ void addSpotLight(char character) {
 	}
 	else { // GHOST
 
-		position[0] = ghost1.displayWidth + (BLOCKWIDTH / 2);
-		position[1] = 10;
-		position[2] = ghost1.displayHeight + (BLOCKWIDTH / 2) + PACMAN_RADIUS;
-		position[3] = 1;
-
-		if(ghost1.lastDirection==UP)direction[2]=1;
-    	if(ghost1.lastDirection==DOWN)direction[2]=-1;
-    	if(ghost1.lastDirection==RIGHT)direction[1]=-1;
-    	if(ghost1.lastDirection==LEFT)direction[1]=1;
+		if(ghost1.lastDirection==UP){
+			
+			position[0] = ghost1.displayWidth + (BLOCKWIDTH / 2);
+			position[2] = ghost1.displayHeight + (BLOCKWIDTH / 2) - GHOST_RADIUS - 1;
+			direction[2] = 1.0;
+		}
+		
+    	if(ghost1.lastDirection==DOWN){
+			
+			position[0] = ghost1.displayWidth + (BLOCKWIDTH / 2);
+			position[2] = ghost1.displayHeight + (BLOCKWIDTH / 2) + GHOST_RADIUS + 1;
+			direction[2] = -1.0;
+		}
+		
+    	if(ghost1.lastDirection==RIGHT){
+			
+			position[0] = ghost1.displayWidth + (BLOCKWIDTH / 2) + GHOST_RADIUS + 1;
+			position[2] = ghost1.displayHeight + (BLOCKWIDTH / 2);
+			direction[2] = -1.0;
+		}
+    	
+		if(ghost1.lastDirection==LEFT){
+			
+			position[0] = ghost1.displayWidth + (BLOCKWIDTH / 2) - GHOST_RADIUS - 1;
+			position[2] = ghost1.displayHeight + (BLOCKWIDTH / 2);
+			direction[2] = 1.0;
+		}
 
 		glLightiv(GL_LIGHT2,GL_POSITION,position);
 		glLightfv(GL_LIGHT2,GL_DIFFUSE,color);
