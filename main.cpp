@@ -171,6 +171,8 @@ void drawWall(int i, int j)
 	GLfloat material[4];
 	material[0]=1.0; material[1]=1.0; material[2]=1.0; material[3]=1.0; 
 	glMaterialfv(GL_FRONT_AND_BACK,GL_AMBIENT_AND_DIFFUSE,material);
+	
+	glPushMatrix(); //remember current matrix
   
 	glEnable(GL_TEXTURE_2D);
 
@@ -255,6 +257,8 @@ void drawWall(int i, int j)
 	glVertex3i(j * HEIGHT / map.ROWS, 15, i * WIDTH / map.COLUMNS2); //4
 
 	glEnd();
+	
+	glPopMatrix(); //restore matrix
 
 }
 
@@ -281,6 +285,7 @@ void drawPacman(GLUquadric *quad)
 	addSpotLight(PACMAN);
 
 	glPushMatrix(); //remember current matrix
+	
 	glTranslatef(pacman.displayWidth + (BLOCKWIDTH / 2), 10, pacman.displayHeight + (BLOCKWIDTH / 2));
 	glBegin(GL_POLYGON);
 
@@ -296,7 +301,7 @@ void drawGhost(GLUquadric *quad)
 	glColor3f(GHOST_COLOR);
 
 	addSpotLight(GHOST);
-
+	
 	glPushMatrix(); //remember current matrix
 	glTranslatef(ghost1.displayWidth + (BLOCKWIDTH / 2), 10, ghost1.displayHeight + (BLOCKWIDTH / 2));
 	glBegin(GL_POLYGON);
@@ -342,44 +347,43 @@ void addAmbientLight() {
 	glEnable(GL_COLOR_MATERIAL);
 
 	glEnable(GL_LIGHT0);
-
-
 }
 
 void addSpotLight(char character) {
 	
-	GLint position[] = {0, 10, 0, 1};;
-	GLfloat color[] = {0.3, 0.3, 0.3, 1};
-	GLfloat direction[] = {0.0, 10.0, 0.0};
+	GLint position[] = {0, 10, 0, 1};
+	GLfloat color[] = {0.3, 0.3, 0.3, 1.0};
+	GLfloat direction[] = {0.0, 0.0, 0.0};
+	GLfloat cut[] = {60.0};
 
 	if(character == PACMAN){ // PACMAN
 		
     	if(pacman.lastDirection==UP){
 			
 			position[0] = pacman.displayWidth + (BLOCKWIDTH / 2);
-			position[2] = pacman.displayHeight + (BLOCKWIDTH / 2) - PACMAN_RADIUS;
-			direction[2] = 1.0;
+			position[2] = pacman.displayHeight + (BLOCKWIDTH / 2) - PACMAN_RADIUS - 1;
+			direction[2] = -1.0;
 		}
 		
     	if(pacman.lastDirection==DOWN){
 			
 			position[0] = pacman.displayWidth + (BLOCKWIDTH / 2);
-			position[2] = pacman.displayHeight + (BLOCKWIDTH / 2) + PACMAN_RADIUS;
-			direction[2] = -1.0;
+			position[2] = pacman.displayHeight + (BLOCKWIDTH / 2) + PACMAN_RADIUS + 1;
+			direction[2] = 1.0;
 		}
 		
     	if(pacman.lastDirection==RIGHT){
 			
-			position[0] = pacman.displayWidth + (BLOCKWIDTH / 2) + PACMAN_RADIUS;
+			position[0] = pacman.displayWidth + (BLOCKWIDTH / 2) + PACMAN_RADIUS + 1;
 			position[2] = pacman.displayHeight + (BLOCKWIDTH / 2);
-			direction[0] = -1.0;
+			direction[0] = 1.0;
 		}
     	
 		if(pacman.lastDirection==LEFT){
 			
-			position[0] = pacman.displayWidth + (BLOCKWIDTH / 2) - PACMAN_RADIUS;
+			position[0] = pacman.displayWidth + (BLOCKWIDTH / 2) - PACMAN_RADIUS - 1;
 			position[2] = pacman.displayHeight + (BLOCKWIDTH / 2);
-			direction[0] = 1.0;
+			direction[0] = -1.0;
 		}
 
 		glLightiv(GL_LIGHT1,GL_POSITION,position);
@@ -387,6 +391,7 @@ void addSpotLight(char character) {
 		glLightf(GL_LIGHT1,GL_CONSTANT_ATTENUATION,1.0);
 		glLightf(GL_LIGHT1,GL_LINEAR_ATTENUATION,0.0);
 		glLightf(GL_LIGHT1,GL_QUADRATIC_ATTENUATION,0.0);
+		glLightfv(GL_LIGHT1,GL_SPOT_CUTOFF, cut);
 		glLightfv(GL_LIGHT1,GL_SPOT_DIRECTION, direction);
 
 		glEnable(GL_LIGHT1);
@@ -398,28 +403,28 @@ void addSpotLight(char character) {
 			
 			position[0] = ghost1.displayWidth + (BLOCKWIDTH / 2);
 			position[2] = ghost1.displayHeight + (BLOCKWIDTH / 2) - GHOST_RADIUS - 1;
-			direction[2] = 1.0;
+			direction[2] = -1.0;
 		}
 		
     	if(ghost1.lastDirection==DOWN){
 			
 			position[0] = ghost1.displayWidth + (BLOCKWIDTH / 2);
 			position[2] = ghost1.displayHeight + (BLOCKWIDTH / 2) + GHOST_RADIUS + 1;
-			direction[2] = -1.0;
+			direction[2] = 1.0;
 		}
 		
     	if(ghost1.lastDirection==RIGHT){
 			
 			position[0] = ghost1.displayWidth + (BLOCKWIDTH / 2) + GHOST_RADIUS + 1;
 			position[2] = ghost1.displayHeight + (BLOCKWIDTH / 2);
-			direction[2] = -1.0;
+			direction[0] = 1.0;
 		}
     	
 		if(ghost1.lastDirection==LEFT){
 			
 			position[0] = ghost1.displayWidth + (BLOCKWIDTH / 2) - GHOST_RADIUS - 1;
 			position[2] = ghost1.displayHeight + (BLOCKWIDTH / 2);
-			direction[2] = 1.0;
+			direction[0] = -1.0;
 		}
 
 		glLightiv(GL_LIGHT2,GL_POSITION,position);
@@ -427,6 +432,7 @@ void addSpotLight(char character) {
 		glLightf(GL_LIGHT2,GL_CONSTANT_ATTENUATION,1.0);
 		glLightf(GL_LIGHT2,GL_LINEAR_ATTENUATION,0.0);
 		glLightf(GL_LIGHT2,GL_QUADRATIC_ATTENUATION,0.0);
+		glLightfv(GL_LIGHT2,GL_SPOT_CUTOFF, cut);
 		glLightfv(GL_LIGHT2,GL_SPOT_DIRECTION, direction);
 
 		glEnable(GL_LIGHT2);
