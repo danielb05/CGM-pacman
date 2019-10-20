@@ -1,4 +1,4 @@
-#include "stdafx.h"
+//#include "stdafx.h"
 
 /*
 10/10/2019
@@ -35,7 +35,7 @@ void drawWall(int i, int j);
 void drawFood(GLUquadric *quad, int i, int j);
 void drawPacman(GLUquadric *quad);
 void drawGhost(GLUquadric *quad);
-void drawFloor();
+void drawFloor(int i, int j);
 void addAmbientLight();
 void addSpotLight(char character);
 
@@ -139,9 +139,15 @@ void display() {
 
 	for (int i = 0; i < map.ROWS; i++) {
 		for (int j = 0; j < map.COLUMNS2; j++) {
+
 			if (map.mapSurface2[i][j] == FIXEDWALL || map.mapSurface2[i][j] == INNERWALL) {
 				
 				drawWall(i, j);
+			} 
+			
+			else {
+				
+				drawFloor(i, j);
 			}
 
 			if (map.mapSurface2[i][j] == FOOD) {
@@ -161,15 +167,12 @@ void display() {
 		}
 	}
 
-	drawFloor();
-
 	glutSwapBuffers();
 }
 
 void drawWall(int i, int j)
 {
-	GLfloat material[4];
-	material[0]=1.0; material[1]=1.0; material[2]=1.0; material[3]=1.0; 
+	GLfloat material[4] = {1,1,1,1};
 	glMaterialfv(GL_FRONT_AND_BACK,GL_AMBIENT_AND_DIFFUSE,material);
 	
 	glPushMatrix(); //remember current matrix
@@ -195,7 +198,9 @@ void drawWall(int i, int j)
 	glDisable(GL_TEXTURE_2D);
 
 	// Walls color
-	glColor3f(WALL_COLOR);
+	//glColor3f(WALL_COLOR);
+	float material2[4] = {WALL_COLOR};
+    glMaterialfv(GL_FRONT_AND_BACK,GL_AMBIENT_AND_DIFFUSE,material2);  
 
 	// Front
 	glBegin(GL_POLYGON);
@@ -265,7 +270,9 @@ void drawWall(int i, int j)
 void drawFood(GLUquadric *quad, int i, int j)
 {
 	// Food color
-	glColor3f(FOOD_COLOR);
+	//glColor3f(FOOD_COLOR);
+	float material[4] = {FOOD_COLOR};
+    glMaterialfv(GL_FRONT_AND_BACK,GL_AMBIENT_AND_DIFFUSE,material);  
 
 	glPushMatrix(); //remember current matrix
 	glTranslatef((j * HEIGHT / map.ROWS) + (BLOCKWIDTH / 2), 10, (i * WIDTH / map.COLUMNS2) + (BLOCKWIDTH / 2));
@@ -280,7 +287,9 @@ void drawFood(GLUquadric *quad, int i, int j)
 void drawPacman(GLUquadric *quad)
 {
 	// Pacman color
-	glColor3f(PACMAN_COLOR);
+	//glColor3f(PACMAN_COLOR);
+	float material[4] = {PACMAN_COLOR};
+    glMaterialfv(GL_FRONT_AND_BACK,GL_AMBIENT_AND_DIFFUSE,material);  
 
 	addSpotLight(PACMAN);
 
@@ -298,7 +307,10 @@ void drawPacman(GLUquadric *quad)
 void drawGhost(GLUquadric *quad)
 {
 	// Ghost color
-	glColor3f(GHOST_COLOR);
+	// glColor3f(GHOST_COLOR);
+
+	float material[4] = {GHOST_COLOR};
+    glMaterialfv(GL_FRONT_AND_BACK,GL_AMBIENT_AND_DIFFUSE,material);  
 
 	addSpotLight(GHOST);
 	
@@ -312,20 +324,30 @@ void drawGhost(GLUquadric *quad)
 	glPopMatrix(); //restore matrix
 }
 
-void drawFloor()
+void drawFloor(int i, int j)
 {
 
 	// Floor color
-	glColor3f(FLOOR_COLOR);
+	//glColor3f(FLOOR_COLOR);
+
+	float material[4] = {FLOOR_COLOR};
+    glMaterialfv(GL_FRONT_AND_BACK,GL_AMBIENT_AND_DIFFUSE,material);  
 
 	//  Upper
 	glBegin(GL_POLYGON);
 	
+	// glNormal3f(0,1,0);
+	// glVertex3i(0, 0, 0); //1
+	// glVertex3i(0, 0, WIDTH); //2
+	// glVertex3i(HEIGHT, 0, WIDTH); //3
+	// glVertex3i(HEIGHT, 0, 0); //4
+	
 	glNormal3f(0,1,0);
-	glVertex3i(0, 0, 0); //1
-	glVertex3i(0, 0, WIDTH); //2
-	glVertex3i(HEIGHT, 0, WIDTH); //3
-	glVertex3i(HEIGHT, 0, 0); //4
+
+	glVertex3i(j * HEIGHT / map.ROWS, 0, i * WIDTH / map.COLUMNS2); //1
+	glVertex3i(j * HEIGHT / map.ROWS, 0, (i + 1) * WIDTH / map.COLUMNS2); //2
+	glVertex3i((j + 1) * HEIGHT / map.ROWS, 0, (i + 1) * WIDTH / map.COLUMNS2); //3
+	glVertex3i((j + 1) * HEIGHT / map.ROWS, 0, i * WIDTH / map.COLUMNS2); //4
 
 	glEnd();
 }
@@ -333,18 +355,17 @@ void drawFloor()
 void addAmbientLight() {
 
 	GLint position[4] = {0,0,0,1};
-	GLfloat color[4] = {0.1,0.1,0.1,1};
+	GLfloat color[4] = {0.1,0.1,0.1,0.5};
 
 	//-- Ambient light
 
 	glLightiv(GL_LIGHT0,GL_POSITION,position);
 	glLightfv(GL_LIGHT0,GL_AMBIENT,color);
 
-	//glLightfv(GL_LIGHT0,GL_DIFFUSE,color);
-    //glLightfv(GL_LIGHT0,GL_SPECULAR,color);
-
-	glColorMaterial(GL_FRONT, GL_DIFFUSE);
-	glEnable(GL_COLOR_MATERIAL);
+	glLightfv(GL_LIGHT0,GL_DIFFUSE,color);
+    glLightfv(GL_LIGHT0,GL_SPECULAR,color);
+	//glColorMaterial(GL_FRONT, GL_DIFFUSE);
+	//glEnable(GL_COLOR_MATERIAL);
 
 	glEnable(GL_LIGHT0);
 }
@@ -352,9 +373,9 @@ void addAmbientLight() {
 void addSpotLight(char character) {
 	
 	GLint position[] = {0, 10, 0, 1};
-	GLfloat color[] = {0.3, 0.3, 0.3, 1.0};
-	GLfloat direction[] = {0.0, 0.0, 0.0};
-	GLfloat cut[] = {60.0};
+	GLfloat color[] = {0.5, 0.5, 0.5, 1.0};
+	GLfloat direction[] = {0.0, -0.2, 0.0};
+	GLfloat cut[] = {20.0};
 
 	if(character == PACMAN){ // PACMAN
 		

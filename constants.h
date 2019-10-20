@@ -68,11 +68,11 @@ In the case of characters the size considered will be:
 #define GHOST_VELOCITY 150
 
 // Colors of the Objects
-#define WALL_COLOR 0.0, 0.5, 1.0
-#define FOOD_COLOR 1.0, 0.5, 0.0
-#define PACMAN_COLOR 1.0, 1.0, 0.0
-#define GHOST_COLOR 1.0, 1.0, 1.0
-#define FLOOR_COLOR 0.25, 0.25, 0.25
+#define WALL_COLOR 0.0, 0.5, 1.0, 1.0
+#define FOOD_COLOR 1.0, 0.5, 0.0, 1.0
+#define PACMAN_COLOR 1.0, 1.0, 0.0, 1.0
+#define GHOST_COLOR 1.0, 1.0, 1.0, 1.0
+#define FLOOR_COLOR 0.35, 0.35, 0.25, 1.0
 
 
 // Movement Direction
