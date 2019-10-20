@@ -35,7 +35,7 @@ void drawWall(int i, int j);
 void drawFood(GLUquadric *quad, int i, int j);
 void drawPacman(GLUquadric *quad);
 void drawGhost(GLUquadric *quad);
-void drawFloor();
+void drawFloor(int i, int j);
 void addAmbientLight();
 void addSpotLight(char character);
 
@@ -136,12 +136,15 @@ void display() {
 	quad = gluNewQuadric();
 
 	gluQuadricDrawStyle(quad, GLU_SILHOUETTE);
-
+	
 	for (int i = 0; i < map.ROWS; i++) {
 		for (int j = 0; j < map.COLUMNS2; j++) {
 			if (map.mapSurface2[i][j] == FIXEDWALL || map.mapSurface2[i][j] == INNERWALL) {
 				
 				drawWall(i, j);
+			} else {
+				
+				drawFloor(i, j);
 			}
 
 			if (map.mapSurface2[i][j] == FOOD) {
@@ -160,8 +163,6 @@ void display() {
 			}
 		}
 	}
-
-	drawFloor();
 
 	glutSwapBuffers();
 }
@@ -312,22 +313,30 @@ void drawGhost(GLUquadric *quad)
 	glPopMatrix(); //restore matrix
 }
 
-void drawFloor()
+void drawFloor(int i, int j)
 {
-
+/*
+	GLfloat material[4];
+	material[0]=1.0; material[1]=1.0; material[2]=1.0; material[3]=1.0; 
+	glMaterialfv(GL_FRONT_AND_BACK,GL_AMBIENT_AND_DIFFUSE,material);
+	*/
+	glPushMatrix(); //remember current matrix
+	
 	// Floor color
 	glColor3f(FLOOR_COLOR);
 
-	//  Upper
+	// Ground
 	glBegin(GL_POLYGON);
-	
+
 	glNormal3f(0,1,0);
-	glVertex3i(0, 0, 0); //1
-	glVertex3i(0, 0, WIDTH); //2
-	glVertex3i(HEIGHT, 0, WIDTH); //3
-	glVertex3i(HEIGHT, 0, 0); //4
+	glVertex3i(j * HEIGHT / map.ROWS, 0, i * WIDTH / map.COLUMNS2); //1
+	glVertex3i(j * HEIGHT / map.ROWS, 0, (i + 1) * WIDTH / map.COLUMNS2); //2
+	glVertex3i((j + 1) * HEIGHT / map.ROWS, 0, (i + 1) * WIDTH / map.COLUMNS2); //3
+	glVertex3i((j + 1) * HEIGHT / map.ROWS, 0, i * WIDTH / map.COLUMNS2); //4
 
 	glEnd();
+	
+	glPopMatrix(); //restore matrix
 }
 
 void addAmbientLight() {
@@ -354,7 +363,7 @@ void addSpotLight(char character) {
 	GLint position[] = {0, 10, 0, 1};
 	GLfloat color[] = {0.3, 0.3, 0.3, 1.0};
 	GLfloat direction[] = {0.0, 0.0, 0.0};
-	GLfloat cut[] = {60.0};
+	GLfloat cut[] = {30.0};
 
 	if(character == PACMAN){ // PACMAN
 		

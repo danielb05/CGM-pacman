@@ -72,7 +72,7 @@ In the case of characters the size considered will be:
 #define FOOD_COLOR 1.0, 0.5, 0.0
 #define PACMAN_COLOR 1.0, 1.0, 0.0
 #define GHOST_COLOR 1.0, 1.0, 1.0
-#define FLOOR_COLOR 0.25, 0.25, 0.25
+#define FLOOR_COLOR 1.0, 0.25, 0.25
 
 
 // Movement Direction
