@@ -4,10 +4,10 @@
 10/10/2019
 Universitat de Lleida
 Computer Graphics and Multimedia
-Task 3 - Pacman 3D graphics and texture implementation
+Task 4 - Inclusion of lighting effects to the game
 Students:
 Daniel Vieira Cordeiro
-Rafael Câmara Pereira
+Rafael CÃ¢mara Pereira
 */
 
 #include "constants.h"
